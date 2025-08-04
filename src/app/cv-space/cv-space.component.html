@@ -1,0 +1,9 @@
+<div class="cv-wrapper">
+  <canvas #canvas></canvas>
+
+  <div *ngIf="selectedPlanet" class="popup">
+    <h2>{{ selectedPlanet.name }}</h2>
+    <p>{{ selectedPlanet.description }}</p>
+    <button (click)="selectedPlanet = null">Close</button>
+  </div>
+</div>

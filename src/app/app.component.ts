@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { CvSpaceComponent } from './cv-space/cv-space.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [CvSpaceComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
