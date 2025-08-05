@@ -2,57 +2,65 @@
   {
     "distance": 4,
     "texture": "assets/planets/2k_ceres_fictional.jpg",
-    "name": "Proiecte personale",
-    "description": "Am creat aplicații...",
+    "name": "Personal Projects",
+    "label": "Codara Prime",
+    "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Skribbl Game (C++ with Qt and networking), CheckersGame (C# + MVVM).",
     "size": 0.5
   },
   {
     "distance": 6,
     "texture": "assets/planets/2k_eris_fictional.jpg",
-    "name": "Competențe tehnice",
-    "description": "JavaScript, TypeScript...",
+    "name": "Technical Skills",
+    "label": "Techton",
+    "description": "Frontend with Angular (Material, PrimeNG), CI/CD (GitHub Actions, ArgoCD), Docker, Kubernetes, RxJS, API Integration, Git, Firebase.",
     "size": 0.7
   },
   {
     "distance": 8,
     "texture": "assets/planets/2k_haumea_fictional.jpg",
-    "name": "Limbaje cunoscute",
-    "description": "Română, Engleză...",
+    "name": "Programming Languages",
+    "label": "Syntaxia",
+    "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C, C++, C#.",
     "size": 0.6
   },
   {
     "distance": 10,
     "texture": "assets/planets/2k_makemake_fictional.jpg",
-    "name": "Hobby-uri",
-    "description": "Fotografie, astronomie...",
+    "name": "Hobbies",
+    "label": "Creatura",
+    "description": "Playing guitar, photography, astronomy, cooking, traveling.",
     "size": 0.8
   },
   {
     "distance": 12,
     "texture": "assets/planets/2k_jupiter.jpg",
-    "name": "Certificări",
-    "description": "Google UX Certificate...",
+    "name": "Languages Spoken",
+    "label": "Lingua",
+    "description": "Romanian, English",
     "size": 0.4
   },
   {
     "distance": 14,
     "texture": "assets/planets/2k_saturn.jpg",
     "name": "Contact",
-    "description": "Email, GitHub, LinkedIn...",
+    "label": "Connectara",
+    "description": "Email: dianadurbaca2003@gmail.com | GitHub: github.com/durbacadiana | LinkedIn: linkedin.com/in/durbacadiana",
     "size": 0.5
   },
   {
     "distance": 16,
     "texture": "assets/planets/2k_mars.jpg",
-    "name": "Educație",
-    "description": "Am absolvit FMI...",
+    "name": "Education",
+    "label": "Acadomea",
+    "description": "Transilvania University of Brașov – Bachelor's in Computer Science and Master's in Internet Technologies (English program). Relevant courses: Data Structures, Algorithms, OOP (C++), AI (Python), Java.",
     "size": 0.9
   },
   {
     "distance": 20,
     "texture": "assets/planets/2k_neptune.jpg",
-    "name": "Experiență",
-    "description": "Am lucrat ca developer...",
+    "name": "Experience",
+    "label": "Expiron",
+    "description": "NTT Data – Frontend (Angular, UX/UI) and DevOps (CI/CD, Kubernetes, AWS, monitoring with Grafana).",
     "size": 1.0
   }
 ]

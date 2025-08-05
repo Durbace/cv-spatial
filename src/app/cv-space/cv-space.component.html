@@ -3,7 +3,32 @@
 
   <div *ngIf="selectedPlanet" class="popup">
     <h2>{{ selectedPlanet.name }}</h2>
-    <p>{{ selectedPlanet.description }}</p>
+
+    <div *ngIf="selectedPlanet.name === 'Contact'; else defaultContent">
+      <div>
+        <a href="mailto:dianadurbaca2003@gmail.com" target="_blank">
+          Email: dianadurbaca2003&#64;gmail.com
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/Durbace" target="_blank">
+          GitHub: github.com/durbacadiana
+        </a>
+      </div>
+      <div>
+        <a
+          href="https://www.linkedin.com/in/diana-elena-durbacă-065473286"
+          target="_blank"
+        >
+          LinkedIn: linkedin.com/in/durbacadiana
+        </a>
+      </div>
+    </div>
+
+    <ng-template #defaultContent>
+      <p>{{ selectedPlanet.description }}</p>
+    </ng-template>
+
     <button (click)="selectedPlanet = null">Close</button>
   </div>
 </div>

@@ -46,3 +46,20 @@ button {
     transform: scale(1);
   }
 }
+
+.popup a {
+  display: block;
+  margin-bottom: 5px;
+  color: #ff9900;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}

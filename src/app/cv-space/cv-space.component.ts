@@ -22,8 +22,8 @@ export class CvSpaceComponent implements AfterViewInit {
   private mouse = new THREE.Vector2();
   selectedPlanet: { name: string; description: string } | null = null;
   private hoveredPlanet: THREE.Mesh | null = null;
-  private glowSprite!: THREE.Sprite;
-  private glowScaleDirection = 1;
+  private shootingStars: THREE.Mesh[] = [];
+  private shootingStarTimer = 0;
 
   constructor(private http: HttpClient) {}
 
@@ -98,11 +98,12 @@ export class CvSpaceComponent implements AfterViewInit {
       planetData.forEach((planet) =>
         this.addPlanet(
           planet.distance,
-          new THREE.Color(planet.color || '#ffffff').getHex(), 
+          new THREE.Color(planet.color || '#ffffff').getHex(),
           planet.name,
           planet.description,
           planet.size,
-          planet.texture
+          planet.texture,
+          planet.label
         )
       );
     });
@@ -118,7 +119,8 @@ export class CvSpaceComponent implements AfterViewInit {
     name: string,
     description: string,
     size: number = 0.6,
-    texturePath?: string
+    texturePath?: string,
+    label?: string
   ): void {
     const geo = new THREE.SphereGeometry(size, 32, 32);
 
@@ -141,6 +143,8 @@ export class CvSpaceComponent implements AfterViewInit {
     const baseSpeed = 0.001;
     const speed = baseSpeed + size * 0.003;
 
+    const displayLabel = label || name;
+
     hitbox.userData = {
       angle,
       distance,
@@ -148,12 +152,40 @@ export class CvSpaceComponent implements AfterViewInit {
       description,
       speed,
       targetPlanet: planet,
+      label: displayLabel,
     };
 
-    planet.userData = { angle, distance, speed };
+    planet.userData = {
+      angle,
+      distance,
+      speed,
+      name,
+      description,
+    };
 
     this.planetGroup.add(hitbox);
     this.planetGroup.add(planet);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d')!;
+    ctx.font = '48px Arial';
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+
+    ctx.fillText(displayLabel, canvas.width / 2, canvas.height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const spriteMaterial = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+    });
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(2, 0.5, 1);
+    sprite.position.set(0, size + 0.7, 0); 
+
+    planet.add(sprite); 
   }
 
   addStars(): void {
@@ -166,7 +198,7 @@ export class CvSpaceComponent implements AfterViewInit {
     }
 
     starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3 });
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
     const stars = new THREE.Points(starGeo, starMat);
     this.scene.add(stars);
   }
@@ -189,6 +221,20 @@ export class CvSpaceComponent implements AfterViewInit {
         if (obj.userData['targetPlanet']) {
           obj.userData['targetPlanet'].position.copy(obj.position);
         }
+      }
+    });
+    this.shootingStarTimer += 1;
+    if (this.shootingStarTimer > 100 && Math.random() < 0.05) {
+      this.createShootingStar();
+      this.shootingStarTimer = 0;
+    }
+
+    this.shootingStars.forEach((star, index) => {
+      star.position.add(star.userData['velocity']);
+
+      if (star.position.y < -10) {
+        this.scene.remove(star);
+        this.shootingStars.splice(index, 1);
       }
     });
 
@@ -253,4 +299,40 @@ export class CvSpaceComponent implements AfterViewInit {
       this.hoveredPlanet = null;
     }
   };
+
+  createShootingStar(): void {
+    const geo = new THREE.SphereGeometry(0.1, 8, 8);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const star = new THREE.Mesh(geo, mat);
+
+    const x = (Math.random() - 0.5) * 100;
+    const y = Math.random() * 20 + 10;
+    const z = (Math.random() - 0.5) * 100;
+
+    star.position.set(x, y, z);
+
+    const velocity = new THREE.Vector3(
+      (Math.random() - 0.5) * 1.5,
+      -0.2 - Math.random() * 0.3,
+      0
+    );
+    star.userData['velocity'] = velocity;
+
+    const tailLength = 2;
+    const tailGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0),
+      velocity.clone().normalize().multiplyScalar(-tailLength),
+    ]);
+    const tailMaterial = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const tail = new THREE.Line(tailGeometry, tailMaterial);
+
+    star.add(tail);
+
+    this.shootingStars.push(star);
+    this.scene.add(star);
+  }
 }
