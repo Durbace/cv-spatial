@@ -86,16 +86,45 @@ export class CvSpaceComponent implements AfterViewInit {
     });
 
     this.addPlanet(
-      4,
-      0x3399ff,
-      'Experiență',
-      'Am lucrat ca developer în mai multe proiecte interesante...'
+      8,
+      0xff6666,
+      'Proiecte personale',
+      'Am creat aplicații web și mobile în timpul liber, inclusiv acest CV interactiv.'
     );
+
     this.addPlanet(
-      6,
-      0x66ff66,
-      'Educație',
-      'Am absolvit Facultatea de Matematică și Informatică...'
+      10,
+      0xcc99ff,
+      'Competențe tehnice',
+      'JavaScript, TypeScript, Angular, Node.js, MongoDB, Git, Docker...'
+    );
+
+    this.addPlanet(
+      12,
+      0xffff66,
+      'Limbaje cunoscute',
+      'Română (nativ), Engleză (C1), Franceză (B1).'
+    );
+
+    this.addPlanet(
+      14,
+      0xffcc99,
+      'Hobby-uri',
+      'Fotografie, astronomie, scris creativ și jocuri de strategie.'
+    );
+
+    this.addPlanet(
+      16,
+      0x66ffff,
+      'Certificări',
+      'Google UX Certificate, JavaScript Algorithms by freeCodeCamp...'
+    );
+
+    this.addPlanet(
+      18,
+      0xffffff,
+      'Contact',
+      'Email: exemplu@gmail.com, GitHub: github.com/exemplu, LinkedIn: ...'
     );
 
     this.addStars();
