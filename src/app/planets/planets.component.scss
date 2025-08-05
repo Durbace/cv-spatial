@@ -1,29 +1,18 @@
 :host {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  background: black;
+  color: white;
   overflow: hidden;
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-  position: absolute;
 }
 
 .overlay {
-  position: absolute;
-  z-index: 10;
-  width: 100%;
+  position: relative;
+  padding: 20px;
   height: 100%;
-  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .back-btn {
@@ -40,12 +29,7 @@ canvas {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  pointer-events: auto;
-  transition: background 0.2s ease;
-}
-
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  z-index: 2;
 }
 
 .back-icon {
@@ -57,12 +41,8 @@ canvas {
 }
 
 .title {
-  position: absolute;
-  top: 50%;
-  left: 10%;
-  transform: translateY(-50%);
-  color: white;
-  pointer-events: none;
+  padding-top: 60px;
+  margin-bottom: 20px;
 }
 
 .subtitle {
@@ -75,4 +55,42 @@ canvas {
   font-weight: 800;
   font-size: 4rem;
   margin: 0;
+}
+
+.planet-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  gap: 40px;
+  padding: 40px 0;
+  scrollbar-color: white transparent;
+  scrollbar-width: thin;
+}
+
+.planet-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+
+.planet-scroll::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 5px;
+}
+
+.planet-item {
+  flex: 0 0 auto;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.planet-canvas {
+  width: 200px;
+  height: 200px;
+}
+
+.planet-info {
+  text-align: center;
+  margin-top: 10px;
+  max-width: 280px;
 }
