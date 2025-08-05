@@ -62,6 +62,9 @@ export class CvSpaceComponent implements AfterViewInit {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
 
+    this.controls.minDistance = 5;
+    this.controls.maxDistance = 35;
+
     const sunGeo = new THREE.SphereGeometry(1.5, 32, 32);
     const textureLoader = new THREE.TextureLoader();
 
