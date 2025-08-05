@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-cv-space',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule, ],
   templateUrl: './cv-space.component.html',
   styleUrls: ['./cv-space.component.scss'],
 })
@@ -23,6 +25,8 @@ export class CvSpaceComponent implements AfterViewInit {
   private hoveredPlanet: THREE.Mesh | null = null;
   private glowSprite!: THREE.Sprite;
   private glowScaleDirection = 1;
+
+  constructor(private http: HttpClient) {}
 
   ngAfterViewInit(): void {
     this.initScene();
@@ -85,63 +89,18 @@ export class CvSpaceComponent implements AfterViewInit {
       sun.add(this.glowSprite);
     });
 
+    this.http.get<any[]>('assets/planets.json').subscribe((planetData) => {
+  planetData.forEach((planet) =>
     this.addPlanet(
-      4,
-      0xff6666,
-      'Proiecte personale',
-      'Am creat aplicații...',
-      0.5,
-      0.004
-    );
-    this.addPlanet(
-      6,
-      0xcc99ff,
-      'Competențe tehnice',
-      'JavaScript, TypeScript...',
-      0.7,
-      0.003
-    );
-    this.addPlanet(
-      8,
-      0xffff66,
-      'Limbaje cunoscute',
-      'Română, Engleză...',
-      0.6,
-      0.0025
-    );
-    this.addPlanet(
-      10,
-      0xffcc99,
-      'Hobby-uri',
-      'Fotografie, astronomie...',
-      0.8,
-      0.0022
-    );
-    this.addPlanet(
-      12,
-      0x66ffff,
-      'Certificări',
-      'Google UX Certificate...',
-      0.4,
-      0.0032
-    );
-    this.addPlanet(
-      14,
-      0xffffff,
-      'Contact',
-      'Email, GitHub, LinkedIn...',
-      0.5,
-      0.0019
-    );
-    this.addPlanet(16, 0x3399ff, 'Educație', 'Am absolvit FMI...', 0.9, 0.0015);
-    this.addPlanet(
-      18,
-      0x66ff66,
-      'Experiență',
-      'Am lucrat ca developer...',
-      1.0,
-      0.0012
-    );
+      planet.distance,
+      new THREE.Color(planet.color).getHex(), // convert hex string to number
+      planet.name,
+      planet.description,
+      planet.size
+    )
+  );
+});
+
 
     this.addStars();
 
@@ -153,21 +112,34 @@ export class CvSpaceComponent implements AfterViewInit {
     color: number,
     name: string,
     description: string,
-    size: number = 0.6,
-    speed: number = 0.0025
+    size: number = 0.6
   ): void {
     const geo = new THREE.SphereGeometry(size, 32, 32);
     const mat = new THREE.MeshStandardMaterial({ color });
     const planet = new THREE.Mesh(geo, mat);
 
-    planet.userData = {
-      angle: Math.random() * Math.PI * 2,
+    const angle = Math.random() * Math.PI * 2;
+
+    const hitboxGeo = new THREE.SphereGeometry(size * 1.5, 8, 8);
+    const hitboxMat = new THREE.MeshBasicMaterial({ visible: false });
+    const hitbox = new THREE.Mesh(hitboxGeo, hitboxMat);
+
+    // Formula dinamică: planetele mai mari => viteză mai mare
+    const baseSpeed = 0.001;
+    const speed = baseSpeed + size * 0.003; // ex: 0.4 => 0.0022, 1.0 => 0.004
+
+    hitbox.userData = {
+      angle,
       distance,
       name,
       description,
       speed,
+      targetPlanet: planet,
     };
 
+    planet.userData = { angle, distance, speed }; // doar pentru animare
+
+    this.planetGroup.add(hitbox);
     this.planetGroup.add(planet);
   }
 
@@ -181,7 +153,7 @@ export class CvSpaceComponent implements AfterViewInit {
     }
 
     starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.7 });
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3 });
     const stars = new THREE.Points(starGeo, starMat);
     this.scene.add(stars);
   }
@@ -189,13 +161,22 @@ export class CvSpaceComponent implements AfterViewInit {
   animate = (): void => {
     requestAnimationFrame(this.animate);
 
-    this.planetGroup.children.forEach((planet: any) => {
-      planet.userData.angle += planet.userData.speed;
-      planet.position.set(
-        Math.cos(planet.userData.angle) * planet.userData.distance,
-        0,
-        Math.sin(planet.userData.angle) * planet.userData.distance
-      );
+    this.planetGroup.children.forEach((obj: any) => {
+      if (obj.userData?.distance != null && obj.userData?.angle != null) {
+        const isHovered = obj.userData['isHovered'];
+        const speedFactor = isHovered ? 0.2 : 1;
+        obj.userData.angle += obj.userData.speed * speedFactor;
+
+        obj.position.set(
+          Math.cos(obj.userData.angle) * obj.userData.distance,
+          0,
+          Math.sin(obj.userData.angle) * obj.userData.distance
+        );
+
+        if (obj.userData['targetPlanet']) {
+          obj.userData['targetPlanet'].position.copy(obj.position);
+        }
+      }
     });
 
     this.controls.update();
@@ -213,9 +194,12 @@ export class CvSpaceComponent implements AfterViewInit {
     );
 
     if (intersects.length > 0) {
-      const planet = intersects[0].object;
-      const { name, description } = planet.userData;
+      const obj = intersects[0].object;
+      const { name, description, targetPlanet } = obj.userData;
       this.selectedPlanet = { name, description };
+
+      // Dacă există planetă legată, seteaz-o ca hovered
+      if (targetPlanet) this.hoveredPlanet = targetPlanet;
     } else {
       this.selectedPlanet = null;
     }
@@ -232,22 +216,29 @@ export class CvSpaceComponent implements AfterViewInit {
     );
 
     if (intersects.length > 0) {
-      const planet = intersects[0].object as THREE.Mesh;
+      const obj = intersects[0].object as THREE.Mesh;
+      const planet = obj.userData['targetPlanet'] ?? obj;
 
+      // Dezactivează efectul pe planeta anterioară
       if (this.hoveredPlanet && this.hoveredPlanet !== planet) {
         (
           this.hoveredPlanet.material as THREE.MeshStandardMaterial
         ).emissive.setHex(0x000000);
+        this.hoveredPlanet.userData['isHovered'] = false;
       }
 
       const mat = planet.material as THREE.MeshStandardMaterial;
       mat.emissive = new THREE.Color(0xffffff);
       mat.emissiveIntensity = 0.5;
+
       this.hoveredPlanet = planet;
+      planet.userData['isHovered'] = true;
     } else if (this.hoveredPlanet) {
       (
         this.hoveredPlanet.material as THREE.MeshStandardMaterial
       ).emissive.setHex(0x000000);
+
+      this.hoveredPlanet.userData['isHovered'] = false;
       this.hoveredPlanet = null;
     }
   };

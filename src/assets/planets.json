@@ -1,0 +1,58 @@
+[
+  {
+    "distance": 4,
+    "color": "#ff6666",
+    "name": "Proiecte personale",
+    "description": "Am creat aplicații...",
+    "size": 0.5
+  },
+  {
+    "distance": 6,
+    "color": "#cc99ff",
+    "name": "Competențe tehnice",
+    "description": "JavaScript, TypeScript...",
+    "size": 0.7
+  },
+  {
+    "distance": 8,
+    "color": "#ffff66",
+    "name": "Limbaje cunoscute",
+    "description": "Română, Engleză...",
+    "size": 0.6
+  },
+  {
+    "distance": 10,
+    "color": "#ffcc99",
+    "name": "Hobby-uri",
+    "description": "Fotografie, astronomie...",
+    "size": 0.8
+  },
+  {
+    "distance": 12,
+    "color": "#66ffff",
+    "name": "Certificări",
+    "description": "Google UX Certificate...",
+    "size": 0.4
+  },
+  {
+    "distance": 14,
+    "color": "#ffffff",
+    "name": "Contact",
+    "description": "Email, GitHub, LinkedIn...",
+    "size": 0.5
+  },
+  {
+    "distance": 16,
+    "color": "#3399ff",
+    "name": "Educație",
+    "description": "Am absolvit FMI...",
+    "size": 0.9
+  },
+  {
+    "distance": 18,
+    "color": "#66ff66",
+    "name": "Experiență",
+    "description": "Am lucrat ca developer...",
+    "size": 1.0
+  }
+]
