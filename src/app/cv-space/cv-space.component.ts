@@ -20,7 +20,8 @@ export class CvSpaceComponent implements AfterViewInit {
   private planetGroup = new THREE.Group();
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
-  selectedPlanet: { name: string; description: string } | null = null;
+  selectedPlanet: { name: string; description: string; label?: string } | null =
+    null;
   private hoveredPlanet: THREE.Mesh | null = null;
   private shootingStars: THREE.Mesh[] = [];
   private shootingStarTimer = 0;
@@ -161,6 +162,7 @@ export class CvSpaceComponent implements AfterViewInit {
       speed,
       name,
       description,
+      label,
     };
 
     this.planetGroup.add(hitbox);
@@ -254,8 +256,8 @@ export class CvSpaceComponent implements AfterViewInit {
 
     if (intersects.length > 0) {
       const obj = intersects[0].object;
-      const { name, description, targetPlanet } = obj.userData;
-      this.selectedPlanet = { name, description };
+      const { name, description, targetPlanet, label } = obj.userData;
+      this.selectedPlanet = { name, description, label };
 
       if (targetPlanet) this.hoveredPlanet = targetPlanet;
     } else {

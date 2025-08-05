@@ -2,6 +2,7 @@
   <canvas #canvas></canvas>
 
   <div *ngIf="selectedPlanet" class="popup">
+    <h3 *ngIf="selectedPlanet.label">{{ selectedPlanet.label }}</h3>
     <h2>{{ selectedPlanet.name }}</h2>
 
     <div *ngIf="selectedPlanet.name === 'Contact'; else defaultContent">
@@ -26,7 +27,48 @@
     </div>
 
     <ng-template #defaultContent>
-      <p>{{ selectedPlanet.description }}</p>
+      <p *ngIf="selectedPlanet.name !== 'Personal Projects'">
+        {{ selectedPlanet.description }}
+      </p>
+
+      <div *ngIf="selectedPlanet.name === 'Personal Projects'">
+        <ul>
+          <li>
+            <a href="https://github.com/Durbace/Weather-App" target="_blank"
+              >Weather App</a
+            > (Angular + Firebase)
+          </li>
+          <li>
+            <a
+              href="https://github.com/Durbace/Liceu-Bac-PrimeNG_App"
+              target="_blank"
+              >Liceu Bac PrimeNG App</a
+            > (PrimeNG + Angular + Node.js)
+          </li>
+          <li>
+            <a href="https://github.com/Durbace/Expense-Tracker" target="_blank"
+              >Expense Tracker (Web)</a
+            >
+          </li> 
+          <li>
+            <a
+              href="https://github.com/Durbace/Expense-Tracker-Mobile-App"
+              target="_blank"
+              >Expense Tracker (Mobile)</a
+            > (web with Angular + mobile with Flutter, backend with Node.js + MongoDB)
+          </li>
+          <li>
+            <a href="https://github.com/Durbace/Sudoku" target="_blank"
+              >Sudoku</a
+            > (C++ with Qt)
+          </li>
+          <li>
+            <a href="https://github.com/Durbace/PythonEchoNet" target="_blank"
+              >Python EchoNet</a
+            > (Python + Echo Server + Docker + Kubernetes + GitHub Actions)
+          </li>
+        </ul>
+      </div>
     </ng-template>
 
     <button (click)="selectedPlanet = null">Close</button>

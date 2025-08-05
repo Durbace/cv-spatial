@@ -3,37 +3,76 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
+  font-family: "Poppins", sans-serif;
 }
 
 canvas {
-  width: 100%;
-  height: 100%;
   display: block;
+  width: 100vw;
+  height: 100vh;
 }
 
 .popup {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
   position: absolute;
   top: 10%;
   left: 10%;
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
-  padding: 1rem 1.5rem;
+  padding: 1.5rem 2rem;
   border-radius: 12px;
   z-index: 10;
-  max-width: 300px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
   animation: fadeIn 0.3s ease;
 }
 
+.popup h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.popup h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.popup p,
+.popup a {
+  font-size: 1.1rem;
+}
+
+.popup a {
+  display: block;
+  margin-bottom: 6px;
+  color: #ffbb33;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 button {
+  font-family: "Poppins", sans-serif;
   margin-top: 1rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   border: none;
   border-radius: 8px;
   background-color: #ff9900;
   color: black;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #ffaa33;
+  }
 }
 
 @keyframes fadeIn {
@@ -45,21 +84,4 @@ button {
     opacity: 1;
     transform: scale(1);
   }
-}
-
-.popup a {
-  display: block;
-  margin-bottom: 5px;
-  color: #ff9900;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-canvas {
-  display: block;
-  width: 100vw;
-  height: 100vh;
 }

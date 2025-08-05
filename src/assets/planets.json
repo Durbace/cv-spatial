@@ -4,7 +4,7 @@
     "texture": "assets/planets/2k_ceres_fictional.jpg",
     "name": "Personal Projects",
     "label": "Codara Prime",
-    "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Skribbl Game (C++ with Qt and networking), CheckersGame (C# + MVVM).",
+    "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Sudoku Game (C++ with Qt), CheckersGame (C# + MVVM).",
     "size": 0.5
   },
   {
