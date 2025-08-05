@@ -86,45 +86,61 @@ export class CvSpaceComponent implements AfterViewInit {
     });
 
     this.addPlanet(
-      8,
+      4,
       0xff6666,
       'Proiecte personale',
-      'Am creat aplicații web și mobile în timpul liber, inclusiv acest CV interactiv.'
+      'Am creat aplicații...',
+      0.5,
+      0.004
     );
-
     this.addPlanet(
-      10,
+      6,
       0xcc99ff,
       'Competențe tehnice',
-      'JavaScript, TypeScript, Angular, Node.js, MongoDB, Git, Docker...'
+      'JavaScript, TypeScript...',
+      0.7,
+      0.003
     );
-
     this.addPlanet(
-      12,
+      8,
       0xffff66,
       'Limbaje cunoscute',
-      'Română (nativ), Engleză (C1), Franceză (B1).'
+      'Română, Engleză...',
+      0.6,
+      0.0025
     );
-
     this.addPlanet(
-      14,
+      10,
       0xffcc99,
       'Hobby-uri',
-      'Fotografie, astronomie, scris creativ și jocuri de strategie.'
+      'Fotografie, astronomie...',
+      0.8,
+      0.0022
     );
-
     this.addPlanet(
-      16,
+      12,
       0x66ffff,
       'Certificări',
-      'Google UX Certificate, JavaScript Algorithms by freeCodeCamp...'
+      'Google UX Certificate...',
+      0.4,
+      0.0032
     );
-
     this.addPlanet(
-      18,
+      14,
       0xffffff,
       'Contact',
-      'Email: exemplu@gmail.com, GitHub: github.com/exemplu, LinkedIn: ...'
+      'Email, GitHub, LinkedIn...',
+      0.5,
+      0.0019
+    );
+    this.addPlanet(16, 0x3399ff, 'Educație', 'Am absolvit FMI...', 0.9, 0.0015);
+    this.addPlanet(
+      18,
+      0x66ff66,
+      'Experiență',
+      'Am lucrat ca developer...',
+      1.0,
+      0.0012
     );
 
     this.addStars();
@@ -136,9 +152,11 @@ export class CvSpaceComponent implements AfterViewInit {
     distance: number,
     color: number,
     name: string,
-    description: string
+    description: string,
+    size: number = 0.6,
+    speed: number = 0.0025
   ): void {
-    const geo = new THREE.SphereGeometry(0.6, 32, 32);
+    const geo = new THREE.SphereGeometry(size, 32, 32);
     const mat = new THREE.MeshStandardMaterial({ color });
     const planet = new THREE.Mesh(geo, mat);
 
@@ -147,6 +165,7 @@ export class CvSpaceComponent implements AfterViewInit {
       distance,
       name,
       description,
+      speed,
     };
 
     this.planetGroup.add(planet);
@@ -171,7 +190,7 @@ export class CvSpaceComponent implements AfterViewInit {
     requestAnimationFrame(this.animate);
 
     this.planetGroup.children.forEach((planet: any) => {
-      planet.userData.angle += 0.0025;
+      planet.userData.angle += planet.userData.speed;
       planet.position.set(
         Math.cos(planet.userData.angle) * planet.userData.distance,
         0,
