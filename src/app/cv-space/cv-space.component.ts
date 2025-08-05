@@ -4,11 +4,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-cv-space',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './cv-space.component.html',
   styleUrls: ['./cv-space.component.scss'],
 })
@@ -59,48 +58,54 @@ export class CvSpaceComponent implements AfterViewInit {
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(ambient);
 
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(10, 10, 10);
-    this.scene.add(pointLight);
-
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
 
     const sunGeo = new THREE.SphereGeometry(1.5, 32, 32);
+    const textureLoader = new THREE.TextureLoader();
+
+    const sunTexture = textureLoader.load('assets/planets/2k_sun.jpg');
+
     const sunMat = new THREE.MeshStandardMaterial({
-      color: 0xffaa00,
-      emissive: 0xffcc33,
-      emissiveIntensity: 1.2,
-      metalness: 0.2,
-      roughness: 0.3,
+      map: sunTexture,
+      emissive: 0xffaa00,
+      emissiveMap: sunTexture,
+      emissiveIntensity: 1.5,
+      metalness: 0.1,
+      roughness: 0.4,
     });
+
     const sun = new THREE.Mesh(sunGeo, sunMat);
     this.scene.add(sun);
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('assets/sun-glow.png', (glowTexture) => {
-      const spriteMat = new THREE.SpriteMaterial({
-        map: glowTexture,
-        color: 0xffdd88,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-      });
-      this.glowSprite = new THREE.Sprite(spriteMat);
-      this.glowSprite.scale.set(6, 6, 1);
-      sun.add(this.glowSprite);
+
+    const sunLight = new THREE.PointLight(0xffcc33, 2.5, 150);
+    sunLight.decay = 2;
+    sunLight.distance = 150;
+    sun.add(sunLight);
+
+    const glowGeo = new THREE.SphereGeometry(1.5, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0xffcc88,
+      transparent: true,
+      opacity: 0.25,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
     });
+    const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+    sun.add(glowMesh);
 
     this.http.get<any[]>('assets/planets.json').subscribe((planetData) => {
-  planetData.forEach((planet) =>
-    this.addPlanet(
-      planet.distance,
-      new THREE.Color(planet.color).getHex(), // convert hex string to number
-      planet.name,
-      planet.description,
-      planet.size
-    )
-  );
-});
-
+      planetData.forEach((planet) =>
+        this.addPlanet(
+          planet.distance,
+          new THREE.Color(planet.color || '#ffffff').getHex(), 
+          planet.name,
+          planet.description,
+          planet.size,
+          planet.texture
+        )
+      );
+    });
 
     this.addStars();
 
@@ -112,10 +117,19 @@ export class CvSpaceComponent implements AfterViewInit {
     color: number,
     name: string,
     description: string,
-    size: number = 0.6
+    size: number = 0.6,
+    texturePath?: string
   ): void {
     const geo = new THREE.SphereGeometry(size, 32, 32);
-    const mat = new THREE.MeshStandardMaterial({ color });
+
+    let mat: THREE.MeshStandardMaterial;
+    if (texturePath) {
+      const texture = new THREE.TextureLoader().load(texturePath);
+      mat = new THREE.MeshStandardMaterial({ map: texture });
+    } else {
+      mat = new THREE.MeshStandardMaterial({ color });
+    }
+
     const planet = new THREE.Mesh(geo, mat);
 
     const angle = Math.random() * Math.PI * 2;
@@ -124,9 +138,8 @@ export class CvSpaceComponent implements AfterViewInit {
     const hitboxMat = new THREE.MeshBasicMaterial({ visible: false });
     const hitbox = new THREE.Mesh(hitboxGeo, hitboxMat);
 
-    // Formula dinamică: planetele mai mari => viteză mai mare
     const baseSpeed = 0.001;
-    const speed = baseSpeed + size * 0.003; // ex: 0.4 => 0.0022, 1.0 => 0.004
+    const speed = baseSpeed + size * 0.003;
 
     hitbox.userData = {
       angle,
@@ -137,7 +150,7 @@ export class CvSpaceComponent implements AfterViewInit {
       targetPlanet: planet,
     };
 
-    planet.userData = { angle, distance, speed }; // doar pentru animare
+    planet.userData = { angle, distance, speed };
 
     this.planetGroup.add(hitbox);
     this.planetGroup.add(planet);
@@ -198,7 +211,6 @@ export class CvSpaceComponent implements AfterViewInit {
       const { name, description, targetPlanet } = obj.userData;
       this.selectedPlanet = { name, description };
 
-      // Dacă există planetă legată, seteaz-o ca hovered
       if (targetPlanet) this.hoveredPlanet = targetPlanet;
     } else {
       this.selectedPlanet = null;
@@ -219,7 +231,6 @@ export class CvSpaceComponent implements AfterViewInit {
       const obj = intersects[0].object as THREE.Mesh;
       const planet = obj.userData['targetPlanet'] ?? obj;
 
-      // Dezactivează efectul pe planeta anterioară
       if (this.hoveredPlanet && this.hoveredPlanet !== planet) {
         (
           this.hoveredPlanet.material as THREE.MeshStandardMaterial
