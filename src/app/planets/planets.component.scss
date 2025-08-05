@@ -1,20 +1,50 @@
-:host {
+.page-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
+  width: 100vw;
   background: black;
-  color: white;
   overflow: hidden;
 }
 
 .overlay {
+  width: 30vw;
+  padding: 40px;
+  color: white;
   position: relative;
-  padding: 20px;
-  height: 100%;
+  z-index: 2;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
+.planet-viewer {
+  position: relative;
+  width: 70vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  canvas {
+    width: 300px;
+    height: 300px;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+
+  .controls {
+    margin-top: 20px;
+    button {
+      margin: 0 10px;
+      font-size: 2rem;
+      background: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}
 .back-btn {
   position: absolute;
   top: 20px;
@@ -29,7 +59,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .back-icon {
@@ -41,56 +75,17 @@
 }
 
 .title {
-  padding-top: 60px;
-  margin-bottom: 20px;
-}
+  pointer-events: none;
 
-.subtitle {
-  font-weight: 300;
-  font-size: 2rem;
-  margin: 0;
-}
+  .subtitle {
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0;
+  }
 
-.main-title {
-  font-weight: 800;
-  font-size: 4rem;
-  margin: 0;
-}
-
-.planet-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  gap: 40px;
-  padding: 40px 0;
-  scrollbar-color: white transparent;
-  scrollbar-width: thin;
-}
-
-.planet-scroll::-webkit-scrollbar {
-  height: 10px;
-}
-
-.planet-scroll::-webkit-scrollbar-thumb {
-  background: white;
-  border-radius: 5px;
-}
-
-.planet-item {
-  flex: 0 0 auto;
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.planet-canvas {
-  width: 200px;
-  height: 200px;
-}
-
-.planet-info {
-  text-align: center;
-  margin-top: 10px;
-  max-width: 280px;
+  .main-title {
+    font-weight: 800;
+    font-size: 4rem;
+    margin: 0;
+  }
 }
