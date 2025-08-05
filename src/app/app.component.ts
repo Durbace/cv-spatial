@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { CvSpaceComponent } from './cv-space/cv-space.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CvSpaceComponent],
+  imports: [RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'cv-spatial';
-}
+export class AppComponent {}

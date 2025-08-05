@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cv-space',
@@ -25,8 +26,9 @@ export class CvSpaceComponent implements AfterViewInit {
   private hoveredPlanet: THREE.Mesh | null = null;
   private shootingStars: THREE.Mesh[] = [];
   private shootingStarTimer = 0;
+  private sun!: THREE.Mesh;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngAfterViewInit(): void {
     this.initScene();
@@ -82,6 +84,14 @@ export class CvSpaceComponent implements AfterViewInit {
     const sun = new THREE.Mesh(sunGeo, sunMat);
     this.scene.add(sun);
 
+    sun.userData = { name: 'Sun', label: 'Menu' };
+    this.sun = sun;
+
+    this.sun.name = 'sun';
+    this.sun.frustumCulled = false;
+    (this.sun.material as THREE.Material).depthWrite = true;
+    (this.sun.material as THREE.Material).transparent = true;
+
     const sunLight = new THREE.PointLight(0xffcc33, 2.5, 150);
     sunLight.decay = 2;
     sunLight.distance = 150;
@@ -97,6 +107,27 @@ export class CvSpaceComponent implements AfterViewInit {
     });
     const glowMesh = new THREE.Mesh(glowGeo, glowMat);
     sun.add(glowMesh);
+
+    const labelCanvas = document.createElement('canvas');
+    labelCanvas.width = 512;
+    labelCanvas.height = 128;
+    const ctx = labelCanvas.getContext('2d')!;
+    ctx.font = 'bold 48px Arial';
+    ctx.fillStyle = 'orange';
+    ctx.textAlign = 'center';
+    ctx.fillText('Menu', labelCanvas.width / 2, labelCanvas.height / 2);
+
+    const labelTexture = new THREE.CanvasTexture(labelCanvas);
+
+    const labelMaterial = new THREE.SpriteMaterial({
+      map: labelTexture,
+      transparent: true,
+    });
+    const labelSprite = new THREE.Sprite(labelMaterial);
+    labelSprite.scale.set(2.5, 0.7, 1);
+    labelSprite.position.set(0, 2.5, 0);
+
+    sun.add(labelSprite);
 
     this.http.get<any[]>('assets/planets.json').subscribe((planetData) => {
       planetData.forEach((planet) =>
@@ -253,15 +284,20 @@ export class CvSpaceComponent implements AfterViewInit {
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const sunIntersects = this.raycaster.intersectObject(this.sun);
+    if (sunIntersects.length > 0) {
+      this.router.navigate(['/planets']);
+      return;
+    }
+
     const intersects = this.raycaster.intersectObjects(
       this.planetGroup.children
     );
-
     if (intersects.length > 0) {
       const obj = intersects[0].object;
       const { name, description, targetPlanet, label } = obj.userData;
       this.selectedPlanet = { name, description, label };
-
       if (targetPlanet) this.hoveredPlanet = targetPlanet;
     } else {
       this.selectedPlanet = null;
@@ -274,10 +310,16 @@ export class CvSpaceComponent implements AfterViewInit {
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const sunIntersects = this.raycaster.intersectObject(this.sun);
+    if (sunIntersects.length > 0) {
+      document.body.style.cursor = 'pointer';
+      return;
+    }
+
     const intersects = this.raycaster.intersectObjects(
       this.planetGroup.children
     );
-
     if (intersects.length > 0) {
       const obj = intersects[0].object as THREE.Mesh;
       const planet = obj.userData['targetPlanet'] ?? obj;
@@ -295,13 +337,16 @@ export class CvSpaceComponent implements AfterViewInit {
 
       this.hoveredPlanet = planet;
       planet.userData['isHovered'] = true;
-    } else if (this.hoveredPlanet) {
-      (
-        this.hoveredPlanet.material as THREE.MeshStandardMaterial
-      ).emissive.setHex(0x000000);
-
-      this.hoveredPlanet.userData['isHovered'] = false;
-      this.hoveredPlanet = null;
+      document.body.style.cursor = 'pointer';
+    } else {
+      if (this.hoveredPlanet) {
+        (
+          this.hoveredPlanet.material as THREE.MeshStandardMaterial
+        ).emissive.setHex(0x000000);
+        this.hoveredPlanet.userData['isHovered'] = false;
+        this.hoveredPlanet = null;
+      }
+      document.body.style.cursor = 'default';
     }
   };
 
