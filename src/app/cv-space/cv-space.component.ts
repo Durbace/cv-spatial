@@ -183,9 +183,9 @@ export class CvSpaceComponent implements AfterViewInit {
     });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(2, 0.5, 1);
-    sprite.position.set(0, size + 0.7, 0); 
+    sprite.position.set(0, size + 0.7, 0);
 
-    planet.add(sprite); 
+    planet.add(sprite);
   }
 
   addStars(): void {
