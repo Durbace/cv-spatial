@@ -24,21 +24,20 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  background: transparent;
+  align-items: center;
   overflow: hidden;
 
   .scroll-container {
     display: flex;
+    width: 100%;
     overflow-x: auto;
-    overflow-y: hidden; 
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    align-items: center; 
+    align-items: center;
 
-    width: 600px;
-    margin: 0 auto;
+    padding: 0 15vw;
 
     padding-bottom: 12px;
 
@@ -57,22 +56,21 @@
   }
 
   .planet-section {
-    flex: 0 0 100%; 
-    width: 100%;
-    scroll-snap-align: start;
+    flex: 0 0 300px;
+    margin: 0 20px;
+    scroll-snap-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    margin-bottom: 12px;
+    justify-content: center;
 
     opacity: 0;
-    transform: translateX(50px);
+    transform: translateY(50px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 
     &.visible {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateY(0);
     }
 
     .planet-canvas {
