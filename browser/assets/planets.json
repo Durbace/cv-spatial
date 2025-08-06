@@ -1,0 +1,66 @@
+[
+  {
+    "distance": 4,
+    "texture": "assets/planets/concrete.jpg",
+    "name": "Personal Projects",
+    "label": "Codara Prime",
+    "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Sudoku Game (C++ with Qt), CheckersGame (C# + MVVM).",
+    "size": 0.5
+  },
+  {
+    "distance": 6,
+    "texture": "assets/planets/inkpaint.jpg",
+    "name": "Technical Skills",
+    "label": "Techton",
+    "description": "Frontend with Angular (Material, PrimeNG), CI/CD (GitHub Actions, ArgoCD), Docker, Kubernetes, RxJS, API Integration, Git, Firebase.",
+    "size": 0.7
+  },
+  {
+    "distance": 8,
+    "texture": "assets/planets/ancientegyptian.jpg",
+    "name": "Programming Languages",
+    "label": "Syntaxia",
+    "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C, C++, C#.",
+    "size": 0.6
+  },
+  {
+    "distance": 10,
+    "texture": "/assets/planets/colorful.jpg",
+    "name": "Hobbies",
+    "label": "Creatura",
+    "description": "Playing guitar, , gaming, photography, cooking, traveling.",
+    "size": 0.8
+  },
+  {
+    "distance": 12,
+    "texture": "assets/planets/2k_jupiter.jpg",
+    "name": "Languages Spoken",
+    "label": "Lingua",
+    "description": "Romanian, English",
+    "size": 0.4
+  },
+  {
+    "distance": 14,
+    "texture": "assets/planets/glass.jpg",
+    "name": "Contact",
+    "label": "Connectara",
+    "description": "Email: dianadurbaca2003@gmail.com | GitHub: github.com/durbacadiana | LinkedIn: linkedin.com/in/durbacadiana",
+    "size": 0.5
+  },
+  {
+    "distance": 16,
+    "texture": "assets/planets/2k_mars.jpg",
+    "name": "Education",
+    "label": "Acadomea",
+    "description": "Transilvania University of Brașov – Bachelor's in Computer Science and Master's in Internet Technologies (English program). Relevant courses: Data Structures, Algorithms, OOP (C++), AI (Python), Java.",
+    "size": 0.9
+  },
+  {
+    "distance": 20,
+    "texture": "assets/planets/2k_neptune.jpg",
+    "name": "Experience",
+    "label": "Expiron",
+    "description": "NTT Data – Frontend (Angular, UX/UI) and DevOps (CI/CD, Kubernetes, AWS, monitoring with Grafana).",
+    "size": 1.0
+  }
+]
