@@ -25,7 +25,7 @@
   },
   {
     "distance": 10,
-    "texture": "/assets/planets/colorful.jpg",
+    "texture": "assets/planets/colorful.jpg",
     "name": "Hobbies",
     "label": "Creatura",
     "description": "Playing guitar, , gaming, photography, cooking, traveling.",
