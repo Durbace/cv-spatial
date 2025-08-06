@@ -27,48 +27,71 @@
     </div>
 
     <ng-template #defaultContent>
-      <p *ngIf="selectedPlanet.name !== 'Personal Projects'">
-        {{ selectedPlanet.description }}
-      </p>
+      <ul *ngIf="selectedPlanet.name === 'Technical Skills'; else otherContent">
+        <li>Frontend with Angular (Material, PrimeNG)</li>
+        <li>CI/CD (GitHub Actions, ArgoCD)</li>
+        <li>Docker</li>
+        <li>Kubernetes</li>
+        <li>RxJS</li>
+        <li>API Integration</li>
+        <li>Git</li>
+        <li>Firebase</li>
+      </ul>
 
-      <div *ngIf="selectedPlanet.name === 'Personal Projects'">
-        <ul>
-          <li>
-            <a href="https://github.com/Durbace/Weather-App" target="_blank"
-              >Weather App</a
-            > (Angular + Firebase)
-          </li>
-          <li>
-            <a
-              href="https://github.com/Durbace/Liceu-Bac-PrimeNG_App"
-              target="_blank"
-              >Liceu Bac PrimeNG App</a
-            > (PrimeNG + Angular + Node.js)
-          </li>
-          <li>
-            <a href="https://github.com/Durbace/Expense-Tracker" target="_blank"
-              >Expense Tracker (Web)</a
-            >
-          </li> 
-          <li>
-            <a
-              href="https://github.com/Durbace/Expense-Tracker-Mobile-App"
-              target="_blank"
-              >Expense Tracker (Mobile)</a
-            > (web with Angular + mobile with Flutter, backend with Node.js + MongoDB)
-          </li>
-          <li>
-            <a href="https://github.com/Durbace/Sudoku" target="_blank"
-              >Sudoku</a
-            > (C++ with Qt)
-          </li>
-          <li>
-            <a href="https://github.com/Durbace/PythonEchoNet" target="_blank"
-              >Python EchoNet</a
-            > (Python + Echo Server + Docker + Kubernetes + GitHub Actions)
-          </li>
-        </ul>
-      </div>
+      <ng-template #otherContent>
+        <div
+          *ngIf="selectedPlanet.name === 'Personal Projects'; else regularText"
+        >
+          <ul>
+            <li>
+              <a href="https://github.com/Durbace/Weather-App" target="_blank"
+                >Weather App</a
+              >
+              (Angular + Firebase)
+            </li>
+            <li>
+              <a
+                href="https://github.com/Durbace/Liceu-Bac-PrimeNG_App"
+                target="_blank"
+                >Liceu Bac PrimeNG App</a
+              >
+              (PrimeNG + Angular + Node.js)
+            </li>
+            <li>
+              <a
+                href="https://github.com/Durbace/Expense-Tracker"
+                target="_blank"
+                >Expense Tracker (Web)</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Durbace/Expense-Tracker-Mobile-App"
+                target="_blank"
+                >Expense Tracker (Mobile)</a
+              >
+              (web with Angular + mobile with Flutter, backend with Node.js +
+              MongoDB)
+            </li>
+            <li>
+              <a href="https://github.com/Durbace/Sudoku" target="_blank"
+                >Sudoku</a
+              >
+              (C++ with Qt)
+            </li>
+            <li>
+              <a href="https://github.com/Durbace/PythonEchoNet" target="_blank"
+                >Python EchoNet</a
+              >
+              (Python + Echo Server + Docker + Kubernetes + GitHub Actions)
+            </li>
+          </ul>
+        </div>
+
+        <ng-template #regularText>
+          <p>{{ selectedPlanet.description }}</p>
+        </ng-template>
+      </ng-template>
     </ng-template>
 
     <button (click)="selectedPlanet = null">Close</button>
