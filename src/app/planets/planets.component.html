@@ -16,12 +16,17 @@
   </div>
 
   <div class="planet-viewer" *ngIf="planetsData.length">
-    <canvas #planetCanvas class="planet-canvas"></canvas>
-    <h2>{{ currentPlanet.label }}</h2>
-    <p>{{ currentPlanet.description }}</p>
-    <div class="controls">
-      <button (click)="prev()">❮</button>
-      <button (click)="next()">❯</button>
+    <div #scrollContainer class="scroll-container">
+      <section
+        class="planet-section"
+        *ngFor="let planet of planetsData; let i = index"
+      >
+        <canvas #canvasRefs class="planet-canvas"></canvas>
+        <div class="info">
+          <h2>{{ planet.label }}</h2>
+          <p>{{ planet.description }}</p>
+        </div>
+      </section>
     </div>
   </div>
 </div>
