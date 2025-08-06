@@ -1,7 +1,7 @@
 [
   {
     "distance": 4,
-    "texture": "assets/planets/2k_ceres_fictional.jpg",
+    "texture": "assets/planets/concrete.jpg",
     "name": "Personal Projects",
     "label": "Codara Prime",
     "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Sudoku Game (C++ with Qt), CheckersGame (C# + MVVM).",
@@ -9,7 +9,7 @@
   },
   {
     "distance": 6,
-    "texture": "assets/planets/2k_eris_fictional.jpg",
+    "texture": "assets/planets/inkpaint.jpg",
     "name": "Technical Skills",
     "label": "Techton",
     "description": "Frontend with Angular (Material, PrimeNG), CI/CD (GitHub Actions, ArgoCD), Docker, Kubernetes, RxJS, API Integration, Git, Firebase.",
@@ -17,7 +17,7 @@
   },
   {
     "distance": 8,
-    "texture": "assets/planets/2k_haumea_fictional.jpg",
+    "texture": "assets/planets/ancientegyptian.jpg",
     "name": "Programming Languages",
     "label": "Syntaxia",
     "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C, C++, C#.",
@@ -25,7 +25,7 @@
   },
   {
     "distance": 10,
-    "texture": "assets/planets/2k_makemake_fictional.jpg",
+    "texture": "/assets/planets/colorful.jpg",
     "name": "Hobbies",
     "label": "Creatura",
     "description": "Playing guitar, , gaming, photography, cooking, traveling.",
@@ -41,7 +41,7 @@
   },
   {
     "distance": 14,
-    "texture": "assets/planets/2k_saturn.jpg",
+    "texture": "assets/planets/glass.jpg",
     "name": "Contact",
     "label": "Connectara",
     "description": "Email: dianadurbaca2003@gmail.com | GitHub: github.com/durbacadiana | LinkedIn: linkedin.com/in/durbacadiana",
