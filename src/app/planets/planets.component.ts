@@ -146,4 +146,5 @@ export class PlanetsComponent implements AfterViewInit {
   goBack() {
     this.router.navigateByUrl('/');
   }
+  
 }

@@ -21,6 +21,7 @@ export class CvSpaceComponent implements AfterViewInit {
   private planetGroup = new THREE.Group();
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
+  private labelSprites: THREE.Sprite[] = [];
   selectedPlanet: { name: string; description: string; label?: string } | null =
     null;
   private hoveredPlanet: THREE.Mesh | null = null;
@@ -129,6 +130,8 @@ export class CvSpaceComponent implements AfterViewInit {
 
     sun.add(labelSprite);
 
+    this.labelSprites.push(labelSprite);
+
     this.http.get<any[]>('assets/planets.json').subscribe((planetData) => {
       planetData.forEach((planet) =>
         this.addPlanet(
@@ -222,6 +225,8 @@ export class CvSpaceComponent implements AfterViewInit {
     sprite.position.set(0, size + 0.7, 0);
 
     planet.add(sprite);
+
+    this.labelSprites.push(sprite);
   }
 
   addStars(): void {
@@ -285,6 +290,11 @@ export class CvSpaceComponent implements AfterViewInit {
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
+    const labelHit = this.raycaster.intersectObjects(this.labelSprites, false);
+    if (labelHit.length > 0) {
+      return;
+    }
+
     const sunIntersects = this.raycaster.intersectObject(this.sun);
     if (sunIntersects.length > 0) {
       this.router.navigate(['/planets']);
@@ -298,7 +308,9 @@ export class CvSpaceComponent implements AfterViewInit {
       const obj = intersects[0].object;
       const { name, description, targetPlanet, label } = obj.userData;
       this.selectedPlanet = { name, description, label };
-      if (targetPlanet) this.hoveredPlanet = targetPlanet;
+      if (targetPlanet) {
+        this.hoveredPlanet = targetPlanet;
+      }
     } else {
       this.selectedPlanet = null;
     }
