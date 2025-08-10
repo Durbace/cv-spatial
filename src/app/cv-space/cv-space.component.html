@@ -6,22 +6,27 @@
     <h2>{{ selectedPlanet.name }}</h2>
 
     <div *ngIf="selectedPlanet.name === 'Contact'; else defaultContent">
-      <div>
-        <a href="mailto:dianadurbaca2003@gmail.com" target="_blank">
-          Email: dianadurbaca2003&#64;gmail.com
+      <div class="contact-icons">
+        <a
+          href="mailto:dianadurbaca2003@gmail.com"
+          target="_blank"
+          title="Send me an Email"
+        >
+          <i class="fas fa-envelope"></i>
         </a>
-      </div>
-      <div>
-        <a href="https://github.com/Durbace" target="_blank">
-          GitHub: github.com/durbacadiana
+        <a
+          href="https://github.com/Durbace"
+          target="_blank"
+          title="View my GitHub"
+        >
+          <i class="fab fa-github"></i>
         </a>
-      </div>
-      <div>
         <a
           href="https://www.linkedin.com/in/diana-elena-durbacă-065473286"
           target="_blank"
+          title="Visit my LinkedIn"
         >
-          LinkedIn: linkedin.com/in/durbacadiana
+          <i class="fab fa-linkedin"></i>
         </a>
       </div>
     </div>

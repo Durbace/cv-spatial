@@ -85,3 +85,24 @@ button {
     transform: scale(1);
   }
 }
+
+.contact-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.contact-icons a {
+  font-size: 2rem;
+  color: #ffbb33;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.contact-icons a:hover {
+  color: #ffaa33;
+  transform: scale(1.15);
+}
+
+.contact-icons a[title] {
+  position: relative;
+}
