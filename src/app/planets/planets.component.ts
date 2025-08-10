@@ -1,15 +1,26 @@
 import {
   Component,
-  AfterViewInit,
+  OnInit,
+  OnDestroy,
   ElementRef,
   ViewChild,
-  ViewChildren,
-  QueryList,
+  ChangeDetectorRef,
+  HostListener,
+  ViewEncapsulation,
 } from '@angular/core';
-import * as THREE from 'three';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+
+type Planet = {
+  distance: number;
+  texture: string;
+  name: string;
+  label: string;
+  description: string;
+  size: number;
+  thumb?: string;
+};
 
 @Component({
   selector: 'app-planets',
@@ -17,134 +28,102 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   imports: [CommonModule, HttpClientModule],
   templateUrl: './planets.component.html',
   styleUrls: ['./planets.component.scss'],
+  encapsulation: ViewEncapsulation.None, 
 })
-export class PlanetsComponent implements AfterViewInit {
-  @ViewChild('scrollContainer', { static: false })
-  scrollRef!: ElementRef<HTMLDivElement>;
+export class PlanetsComponent implements OnInit, OnDestroy {
+  @ViewChild('wrap',  { static: false }) wrapRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('track', { static: false }) trackRef!: ElementRef<HTMLDivElement>;
 
-  @ViewChildren('canvasRefs')
-  canvasRefs!: QueryList<ElementRef<HTMLCanvasElement>>;
+  planetsData: Planet[] = [];
+  activeIndex = 0;
 
-  planetsData: any[] = [];
-  private meshes: THREE.Mesh[] = [];
-  private observersSet = false;
+  private touchStartX = 0;
+  private touchStartY = 0;
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngAfterViewInit() {
-    this.http.get<any[]>('assets/planets.json').subscribe((data) => {
-      this.planetsData = data;
-      setTimeout(() => {
-        this.initAllScenes();
-        this.setupObserver();
-      }, 0);
+  ngOnInit() {
+    this.http.get<Planet[]>('assets/planets.json').subscribe({
+      next: (data) => {
+        this.planetsData = (data || []).map(p => ({ ...p, thumb: p.thumb ?? p.texture }));
+        this.cdr.detectChanges(); 
+        setTimeout(() => this.center(this.activeIndex), 0); 
+      },
+      error: (err) => {
+        console.error('[planets] json load fail', err);
+        this.planetsData = [{
+          distance: 4,
+          texture: 'assets/planets/2k_mars.jpg',
+          name: 'Fallback',
+          label: 'Mars (fallback)',
+          description: 'JSON-ul nu s-a încărcat.',
+          size: 0.8,
+          thumb: 'assets/planets/2k_mars.jpg'
+        }];
+        this.cdr.detectChanges();
+        setTimeout(() => this.center(this.activeIndex), 0);
+      }
     });
   }
 
-  private initAllScenes() {
-    this.canvasRefs.forEach((cRef, idx) => {
-      const planet = this.planetsData[idx];
-      const canvas = cRef.nativeElement;
+  private center(i: number, retries = 5) {
+    const track = this.trackRef?.nativeElement;
+    const wrap  = this.wrapRef?.nativeElement;
+    if (!track || !wrap) {
+      if (retries > 0) setTimeout(() => this.center(i, retries - 1), 50);
+      return;
+    }
 
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-      camera.position.set(0, 0, 1.2 * 3);
+    const cards = Array.from(track.children) as HTMLElement[];
+    const card = cards[i];
+    if (!card) {
+      if (retries > 0) setTimeout(() => this.center(i, retries - 1), 50);
+      return;
+    }
 
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-      });
-      renderer.setSize(300, 300);
+    const isMobile = matchMedia('(max-width:767px)').matches;
+    const axis = isMobile ? 'top' : 'left';
+    const size = isMobile ? 'clientHeight' : 'clientWidth';
+    const start = isMobile ? card.offsetTop : card.offsetLeft;
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-      const key = new THREE.DirectionalLight(0xffffff, 1.2);
-      key.position.set(5, 5, 5);
-      scene.add(key);
-
-      const texture = new THREE.TextureLoader().load(planet.texture);
-      const geo = new THREE.SphereGeometry(1.2, 64, 64);
-      const mat = new THREE.MeshStandardMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 0,
-        metalness: 0.1,
-        roughness: 0.8,
-        emissive: new THREE.Color(0x111111),
-        emissiveIntensity: 0.5,
-      });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.x = 50;
-      scene.add(mesh);
-
-      this.meshes.push(mesh);
-
-      const animate = () => {
-        requestAnimationFrame(animate);
-        mesh.rotation.y += 0.01;
-        renderer.render(scene, camera);
-      };
-      animate();
-    });
+    wrap.scrollTo({
+      [axis]: start - (wrap[size] / 2 - card[size] / 2),
+      behavior: 'smooth',
+    } as ScrollToOptions);
   }
 
-  private setupObserver() {
-    if (this.observersSet) return;
-    this.observersSet = true;
+  activate(i: number) {
+    if (i === this.activeIndex) return;
+    this.activeIndex = Math.max(0, Math.min(i, this.planetsData.length - 1));
+    this.center(this.activeIndex);
+  }
+  go(step: number) { this.activate(this.activeIndex + step); }
 
-    const options = {
-      root: this.scrollRef.nativeElement,
-      threshold: 0.5,
-    };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const sec = entry.target as HTMLElement;
-        const sections = Array.from(
-          this.scrollRef.nativeElement.querySelectorAll('.planet-section')
-        );
-        const idx = sections.indexOf(sec);
-        if (entry.isIntersecting && idx >= 0) {
-          sec.classList.add('visible');
-          this.fadeInMesh(this.meshes[idx]);
-        } else if (idx >= 0) {
-          sec.classList.remove('visible');
-          this.fadeOutMesh(this.meshes[idx]);
-        }
-      });
-    }, options);
-
-    const sections =
-      this.scrollRef.nativeElement.querySelectorAll('.planet-section');
-    sections.forEach((sec) => observer.observe(sec));
+  onTouchStart(e: TouchEvent) {
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+  }
+  onTouchEnd(e: TouchEvent) {
+    const dx = e.changedTouches[0].clientX - this.touchStartX;
+    const dy = e.changedTouches[0].clientY - this.touchStartY;
+    const isMobile = matchMedia('(max-width:767px)').matches;
+    if (isMobile ? Math.abs(dy) > 60 : Math.abs(dx) > 60) {
+      this.go((isMobile ? dy : dx) > 0 ? -1 : 1);
+    }
   }
 
-  private fadeInMesh(mesh: THREE.Mesh) {
-    let t = 0;
-    const mat = mesh.material as THREE.MeshStandardMaterial;
-    mesh.position.x = -0.4;
-    const anim = () => {
-      t += 0.05;
-      mat.opacity = t;
-      mesh.position.x += 0.02;
-      if (t < 1) requestAnimationFrame(anim);
-    };
-    anim();
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    if (['ArrowRight', 'ArrowDown'].includes(e.key)) this.go(1);
+    if (['ArrowLeft', 'ArrowUp'].includes(e.key)) this.go(-1);
   }
 
-  private fadeOutMesh(mesh: THREE.Mesh) {
-    let t = (mesh.material as THREE.MeshStandardMaterial).opacity;
-    const mat = mesh.material as THREE.MeshStandardMaterial;
-    const anim = () => {
-      t -= 0.05;
-      mat.opacity = t;
-      mesh.position.x += 0.02;
-      if (t > 0) requestAnimationFrame(anim);
-    };
-    anim();
-  }
+  ngOnDestroy() {}
 
-  goBack() {
-    this.router.navigateByUrl('/');
-  }
-  
+  onDetails(planet: Planet) { console.log('Details for:', planet); }
+  goBack() { this.router.navigateByUrl('/'); }
 }

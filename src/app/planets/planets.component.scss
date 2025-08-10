@@ -1,9 +1,24 @@
+:root {
+  --gap: 1.25rem;
+  --speed: 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --closed: 5rem;
+  --open: 30rem;
+  --accent: #ff6b35;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .page-container {
   display: flex;
   flex-direction: row;
   height: 100vh;
   width: 100vw;
-  background: black;
+  background: #07090d;
+  color: #c5c7ce;
   overflow: hidden;
 
   background-image: url("../../assets/planets/2k_stars.jpg");
@@ -23,81 +38,17 @@
   justify-content: center;
 }
 
-.planet-viewer {
-  position: relative;
-  width: 70vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-
-  .scroll-container {
-    display: flex;
-    width: 80%;
-    margin: 0 auto;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    align-items: center;
-    padding-bottom: 12px;
-
-    &::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: linear-gradient(90deg, #ffffffaa, #ffffff55);
-      border-radius: 20px;
-      backdrop-filter: blur(2px);
-      transition: all 0.3s ease;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(90deg, #ffffff, #cccccc);
-      height: 10px;
-    }
-
-    scrollbar-width: thin;
-    scrollbar-color: #fff rgba(255, 255, 255, 0.2);
+.title {
+  pointer-events: none;
+  .subtitle {
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0;
   }
-
-  .planet-section {
-    flex: 0 0 300px;
-    margin: 0 20px;
-    scroll-snap-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-
-    &.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .planet-canvas {
-      width: 300px;
-      height: 300px;
-      margin-bottom: 16px;
-    }
-
-    .info {
-      text-align: center;
-      color: white;
-      font-size: 1rem;
-      line-height: 1.4;
-    }
+  .main-title {
+    font-weight: 800;
+    font-size: 4rem;
+    margin: 0;
   }
 }
 
@@ -117,11 +68,9 @@
   cursor: pointer;
   transition: background 0.2s ease;
 }
-
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-
 .back-icon {
   width: 28px;
   height: 28px;
@@ -130,18 +79,197 @@
   fill: none;
 }
 
-.title {
-  pointer-events: none;
+.planet-viewer {
+  position: relative;
+  width: 70vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  .subtitle {
-    font-weight: 300;
-    font-size: 2rem;
-    margin: 0;
+.head {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 70px 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  h2 {
+    font: 400 1.5rem/1.2 Inter, sans-serif;
+    color: #fff;
   }
+}
+@media (min-width: 1024px) {
+  .head h2 {
+    font-size: 2.25rem;
+  }
+}
+.controls {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+.nav-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.nav-btn:hover {
+  background: var(--accent);
+}
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
 
-  .main-title {
-    font-weight: 800;
-    font-size: 4rem;
-    margin: 0;
-  }
+.slider {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  overflow: hidden;
+}
+.track {
+  display: flex;
+  gap: var(--gap);
+  align-items: flex-start;
+  justify-content: center;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 40px;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.project-card {
+  position: relative;
+  flex: 0 0 var(--closed);
+  height: 26rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: flex-basis var(--speed), transform var(--speed);
+}
+.project-card[active] {
+  flex-basis: var(--open);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+}
+
+.project-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75) saturate(75%);
+  transition: filter 0.3s, transform var(--speed);
+}
+.project-card:hover .project-card__bg {
+  filter: brightness(0.9) saturate(100%);
+  transform: scale(1.06);
+}
+
+.project-card__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0;
+  background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 2;
+}
+.project-card__title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.35rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.project-card__thumb,
+.project-card__desc,
+.project-card__btn {
+  display: none;
+}
+
+.project-card[active] .project-card__content {
+  flex-direction: row;
+  align-items: center;
+  padding: 1.2rem 2rem;
+  gap: 1.1rem;
+}
+.project-card[active] .project-card__title {
+  writing-mode: horizontal-tb;
+  transform: none;
+  font-size: 2.4rem;
+}
+.project-card[active] .project-card__thumb,
+.project-card[active] .project-card__desc,
+.project-card[active] .project-card__btn {
+  display: block;
+}
+
+.project-card__thumb {
+  width: 133px;
+  height: 269px;
+  border-radius: 0.45rem;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.project-card__desc {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.4;
+  max-width: 16rem;
+}
+.project-card__btn {
+  padding: 0.55rem 1.3rem;
+  border: none;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.project-card__btn:hover {
+  background: #ff824f;
+}
+
+.dots {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.dot.active {
+  background: var(--accent);
+  transform: scale(1.2);
 }

@@ -9,24 +9,62 @@
         />
       </svg>
     </button>
+
     <div class="title">
       <h1 class="subtitle">Explore</h1>
       <h1 class="main-title">The Planets</h1>
     </div>
   </div>
 
-  <div class="planet-viewer" *ngIf="planetsData.length">
-    <div #scrollContainer class="scroll-container">
-      <section
-        class="planet-section"
-        *ngFor="let planet of planetsData; let i = index"
+  <div class="planet-viewer">
+    <div class="slider" #wrap>
+      <div
+        class="track"
+        #track
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
       >
-        <canvas #canvasRefs class="planet-canvas"></canvas>
-        <div class="info">
-          <h2>{{ planet.label }}</h2>
-          <p>{{ planet.description }}</p>
-        </div>
-      </section>
+        <article
+          class="project-card"
+          *ngFor="let planet of planetsData; let i = index"
+          [attr.active]="i === activeIndex ? true : null"
+          (mouseenter)="activate(i)"
+          (click)="activate(i)"
+        >
+          <img
+            class="project-card__bg"
+            [src]="planet.texture"
+            [alt]="planet.label + ' background'"
+          />
+          <div class="project-card__content">
+            <img
+              class="project-card__thumb"
+              [src]="planet.texture"
+              [alt]="planet.label + ' thumbnail'"
+            />
+            <div>
+              <h3 class="project-card__title">{{ planet.label }}</h3>
+              <p class="project-card__desc">{{ planet.description }}</p>
+              <button
+                class="project-card__btn"
+                (click)="$event.stopPropagation(); onDetails(planet)"
+              >
+                Details
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="dots">
+      <span
+        class="dot"
+        *ngFor="let _ of planetsData; let i = index"
+        [class.active]="i === activeIndex"
+        (click)="activate(i)"
+      >
+      </span>
     </div>
   </div>
 </div>
