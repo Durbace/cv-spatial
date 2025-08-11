@@ -37,20 +37,9 @@
             [alt]="planet.label + ' background'"
           />
           <div class="project-card__content">
-            <img
-              class="project-card__thumb"
-              [src]="planet.texture"
-              [alt]="planet.label + ' thumbnail'"
-            />
-            <div>
+            <div class="project-card__info">
               <h3 class="project-card__title">{{ planet.label }}</h3>
               <p class="project-card__desc">{{ planet.description }}</p>
-              <button
-                class="project-card__btn"
-                (click)="$event.stopPropagation(); onDetails(planet)"
-              >
-                Details
-              </button>
             </div>
           </div>
         </article>
