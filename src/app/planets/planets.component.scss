@@ -1,33 +1,51 @@
 :root {
   --gap: 1.25rem;
   --speed: 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --closed: 5rem;
-  --open: 30rem;
+  --closed: 5.5rem;
+  --open: 28rem;
   --accent: #ff6b35;
+
+  --planet-size: 56px;
+  --planet-gap: 0.6rem;
+
+  --rail-pad: calc((var(--open) - var(--closed)) / 2 + var(--gap) * 2);
 }
 
-/* Reset */
+.track {
+  display: flex;
+  gap: var(--gap);
+  align-items: flex-start;
+  justify-content: flex-start; 
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 0 0 40px;
+}
+
+.track::before {
+  content: "";
+  flex: 0 0 calc((var(--open) - var(--closed)) / 2 + var(--gap) + 16px);
+}
+
+.track::after {
+  content: "";
+  flex: 0 0 calc((var(--open) - var(--closed)) / 2 + var(--gap) + 32px);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Layout general */
 .page-container {
   display: flex;
-  flex-direction: row;
   height: 100vh;
   width: 100vw;
-  background: #07090d;
+  background: #07090d url("../../assets/planets/2k_stars.jpg") center / cover no-repeat;
   color: #c5c7ce;
   overflow: hidden;
-  background-image: url("../../assets/planets/2k_stars.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 .overlay {
   width: 30vw;
   padding: 40px;
-  color: white;
+  color: #fff;
   position: relative;
   z-index: 2;
   display: flex;
@@ -35,25 +53,21 @@
   justify-content: center;
 }
 
-.title {
-  pointer-events: none;
-  .subtitle { font-weight: 300; font-size: 2rem; }
-  .main-title { font-weight: 800; font-size: 4rem; }
-}
+.title-texts { display: flex; flex-direction: column; line-height: 1; }
+.title-texts .subtitle { font-weight: 300; font-size: 2rem; }
+.title-texts .main-title { font-weight: 800; font-size: 4rem; }
 
-/* Back button */
 .back-btn {
   position: absolute; top: 20px; left: 20px;
   width: 55px; height: 55px;
-  border: 2px solid white; border-radius: 50%;
-  background: transparent; color: white;
+  border: 2px solid #fff; border-radius: 50%;
+  background: transparent; color: #fff;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: background 0.2s ease;
 }
-.back-btn:hover { background: rgba(255, 255, 255, 0.1); }
-.back-icon { width: 28px; height: 28px; stroke: white; stroke-width: 2; fill: none; }
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+.back-icon { width: 28px; height: 28px; stroke: #fff; stroke-width: 2; fill: none; }
 
-/* Viewer */
 .planet-viewer {
   position: relative;
   width: 70vw; height: 100vh;
@@ -61,40 +75,31 @@
   justify-content: center; align-items: center;
 }
 
-/* Header (opțional) */
-.head {
-  width: 100%; max-width: 1400px; margin: auto; padding: 70px 20px 40px;
-  display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem;
-  h2 { font: 400 1.5rem/1.2 Inter, sans-serif; color: #fff; }
+.slider{
+  width:100%;
+  max-width:1400px;
+  margin:auto;
+  overflow:visible;
+  scrollbar-width:none;
+  padding:0; 
 }
-@media (min-width: 1024px) { .head h2 { font-size: 2.25rem; } }
+.slider::-webkit-scrollbar{ display:none; }
 
-.controls { display: flex; gap: 0.5rem; }
-.nav-btn {
-  width: 2.5rem; height: 2.5rem; border: none; border-radius: 50%;
-  background: rgba(255,255,255,0.12); color: #fff; font-size: 1.5rem;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: 0.3s;
-}
-.nav-btn:hover { background: var(--accent); }
-.nav-btn:disabled { opacity: 0.3; cursor: default; }
-
-/* Slider */
-.slider { width: 100%; max-width: 1400px; margin: auto; overflow: hidden; }
 .track {
   display: flex; gap: var(--gap);
   align-items: flex-start; justify-content: center;
   scroll-behavior: smooth; scroll-snap-type: x mandatory;
-  padding-bottom: 40px;
+  padding: 0 var(--rail-pad) 40px;
 }
-.track::-webkit-scrollbar { display: none; }
+.project-card { scroll-snap-align: center; }
 
-/* Card */
 .project-card {
   position: relative;
   flex: 0 0 var(--closed);
   height: 26rem;
-  border-radius: 1rem; overflow: hidden; cursor: pointer;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
   transition: flex-basis var(--speed), transform var(--speed);
 }
 .project-card[active] {
@@ -103,7 +108,6 @@
   box-shadow: 0 18px 55px rgba(0,0,0,0.45);
 }
 
-/* BG */
 .project-card__bg {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
@@ -112,77 +116,77 @@
 }
 .project-card:hover .project-card__bg { transform: scale(1.06); }
 
-/* Conținut card – stare implicită (închis): doar titlul, vertical & centrat */
 .project-card__content {
   position: absolute; inset: 0;
   display: flex; justify-content: center; align-items: center;
-  padding: 1.2rem 2rem 1.6rem;
+  padding: 1.4rem 2rem 1.8rem;
   background: rgba(255,255,255,0.22);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0,0,0,0.1);
   backdrop-filter: blur(3.7px);
   -webkit-backdrop-filter: blur(3.7px);
 }
-
-/* Header din starea activă (planetă + nume pe un rând) */
-.project-card__header {
-  display: flex; align-items: center; gap: 1rem;
-}
-
-/* Planetă (vizibilă doar la activ) */
-.project-card__planet {
-  width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-  display: none;
-}
-
-/* Titlu – bază */
-.project-card__title {
-  color: #fff;
-  font-weight: 800;
-  margin: 0;
-}
-
-/* Titlu – card închis (vertical) */
-.project-card:not([active]) .project-card__title {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-size: 1.4rem;
-  text-align: center;
-}
-
-/* Titlu – card activ (orizontal + mare) */
-.project-card[active] .project-card__title {
-  writing-mode: horizontal-tb;
-  transform: none;
-  font-size: clamp(1.8rem, 2.2vw + 1rem, 3rem);
-  line-height: 1.1;
-}
-
-/* Descriere (vizibilă doar la activ) */
-.project-card__desc {
-  display: none;
-  color: #ddd;
-  font-size: 1.05rem;
-  line-height: 1.55;
-  max-width: 44ch;
-  margin-left: calc(72px + 1rem);
-}
-
-/* Stare activă – afișare planetă + descriere și layout pe coloană, aliniat la stânga */
 .project-card[active] .project-card__content {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 0.8rem;
 }
-.project-card[active] .project-card__planet,
-.project-card[active] .project-card__desc {
-  display: block;
+
+.project-card__header {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--planet-gap);
+  width: auto; max-width: 100%;
 }
 
+.planet-3d,
+.project-card__planet {
+  flex: 0 0 var(--planet-size);
+  width: var(--planet-size);
+  height: var(--planet-size);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+.planet-3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  position: static !important;
+  transform: none !important;
+}
+
+.project-card__title {
+  color: #fff; font-weight: 800; margin: 0; line-height: 1;
+  flex: 0 1 auto; display: inline-block;
+}
+.project-card:not([active]) .project-card__title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 1.4rem;
+  text-align: center;
+}
+.project-card[active] .project-card__title {
+  writing-mode: horizontal-tb;
+  transform: none;
+  font-size: clamp(1.6rem, 1.6vw + .9rem, 2.4rem);
+  line-height: 1.05;
+}
+
+.project-card__desc {
+  display: none;
+  color: #ddd;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: calc(var(--open) - var(--planet-size) - var(--planet-gap) - 3rem);
+  margin-left: calc(var(--planet-size) + var(--planet-gap));
+}
+.project-card[active] .project-card__desc { display: block; }
+
 .dots {
-  position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
   display: flex; gap: 0.5rem; justify-content: center;
 }
 .dot {

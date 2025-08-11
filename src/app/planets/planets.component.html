@@ -11,9 +11,12 @@
     </button>
 
     <div class="title">
-      <h1 class="subtitle">Explore</h1>
-      <h1 class="main-title">The Planets</h1>
-    </div>
+  <div class="title-texts">
+    <h1 class="subtitle">Explore</h1>
+    <h1 class="main-title">The Planets</h1>
+  </div>
+</div>
+
   </div>
 
   <div class="planet-viewer">
@@ -39,11 +42,7 @@
           <div class="project-card__content">
             <div class="project-card__info">
               <div class="project-card__header">
-                <img
-                  class="project-card__planet"
-                  [src]="planet.thumb"
-                  [alt]="planet.label + ' thumbnail'"
-                />
+                <div class="planet-3d" #planetCanvas></div>
                 <h3 class="project-card__title">{{ planet.label }}</h3>
               </div>
 
