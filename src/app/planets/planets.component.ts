@@ -42,7 +42,9 @@ type PlanetHandle = {
 export class PlanetsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('wrap', { static: false }) wrapRef!: ElementRef<HTMLDivElement>;
   @ViewChild('track', { static: false }) trackRef!: ElementRef<HTMLDivElement>;
-  @ViewChildren('planetCanvas') planetCanvasList!: QueryList<ElementRef<HTMLElement>>;
+  @ViewChildren('planetCanvas') planetCanvasList!: QueryList<
+    ElementRef<HTMLElement>
+  >;
 
   planetsData: Planet[] = [];
   activeIndex = 0;
@@ -96,18 +98,21 @@ export class PlanetsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     setTimeout(() => this.initAllPlanets(), 0);
 
-    this.io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        const idx = Number((entry.target as HTMLElement).dataset['index']);
-        if (Number.isFinite(idx)) {
-          if (entry.isIntersecting) {
-            this.visibleSet.add(idx);
-          } else {
-            this.visibleSet.delete(idx);
+    this.io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const idx = Number((entry.target as HTMLElement).dataset['index']);
+          if (Number.isFinite(idx)) {
+            if (entry.isIntersecting) {
+              this.visibleSet.add(idx);
+            } else {
+              this.visibleSet.delete(idx);
+            }
           }
         }
-      }
-    }, { threshold: 0.1 });
+      },
+      { threshold: 0.1 }
+    );
   }
 
   private initAllPlanets() {
@@ -190,103 +195,130 @@ export class PlanetsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.io?.disconnect();
-    this.planetHandles.forEach(h => h.cleanup());
+    this.planetHandles.forEach((h) => h.cleanup());
     this.planetHandles.clear();
   }
 
   private initPlanet(textureUrl: string, container: HTMLElement): PlanetHandle {
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-  camera.position.z = 3;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.z = 3;
 
-  const renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-    powerPreference: 'high-performance',
-  });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
 
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  renderer.setPixelRatio(dpr);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    renderer.setPixelRatio(dpr);
 
-  container.innerHTML = '';
-  container.appendChild(renderer.domElement);
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
 
-  const geometry = new THREE.SphereGeometry(1, 96, 96);
+    const geometry = new THREE.SphereGeometry(1, 96, 96);
 
-  const loader = new THREE.TextureLoader();
-  const texture = loader.load(textureUrl, () => {
-    renderer.render(scene, camera);
-  });
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(textureUrl, () => {
+      renderer.render(scene, camera);
+    });
 
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.generateMipmaps = true;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
-  const material = new THREE.MeshStandardMaterial({ map: texture });
-  const sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
+    const material = new THREE.MeshStandardMaterial({ map: texture });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(5, 3, 5);
-  scene.add(light);
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 3, 5);
+    scene.add(light);
 
-  const setCanvasSize = () => {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    if (w > 0 && h > 0) {
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
-      return true;
-    }
-    return false;
-  };
+    const setCanvasSize = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h, false);
+        return true;
+      }
+      return false;
+    };
 
-  let hasValidSize = setCanvasSize();
+    let hasValidSize = setCanvasSize();
 
-  const ro = new ResizeObserver(() => {
-    const ok = setCanvasSize();
-    if (ok) renderer.render(scene, camera);
-  });
-  ro.observe(container);
+    const ro = new ResizeObserver(() => {
+      const ok = setCanvasSize();
+      if (ok) renderer.render(scene, camera);
+    });
+    ro.observe(container);
 
-  let raf = 0;
-  const animate = () => {
-    if (!hasValidSize) hasValidSize = setCanvasSize();
+    let raf = 0;
+    const animate = () => {
+      if (!hasValidSize) hasValidSize = setCanvasSize();
 
-    const idx = Number(container.dataset['index']);
-    if (!Number.isNaN(idx) && this.io && !this.visibleSet.has(idx)) {
+      const idx = Number(container.dataset['index']);
+      if (!Number.isNaN(idx) && this.io && !this.visibleSet.has(idx)) {
+        raf = requestAnimationFrame(animate);
+        return;
+      }
+
+      sphere.rotation.y += 0.002;
+      renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);
-      return;
+    };
+    raf = requestAnimationFrame(animate);
+
+    const onWindowResize = () => {
+      setCanvasSize();
+    };
+    window.addEventListener('resize', onWindowResize);
+
+    const cleanup = () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener('resize', onWindowResize);
+
+      geometry.dispose();
+      material.dispose();
+      texture.dispose();
+      renderer.dispose();
+
+      try {
+        container.removeChild(renderer.domElement);
+      } catch {}
+    };
+
+    const stop = () => cancelAnimationFrame(raf);
+
+    return { stop, cleanup };
+  }
+
+  getDescItems(p: Planet): string[] {
+    const raw = (p.description || '').trim();
+
+    if (/contact/i.test(p.name) || /connectara/i.test(p.label)) {
+      return raw
+        .split('|')
+        .map((s) => s.trim()) 
+        .filter(Boolean);
     }
 
-    sphere.rotation.y += 0.002;
-    renderer.render(scene, camera);
-    raf = requestAnimationFrame(animate);
-  };
-  raf = requestAnimationFrame(animate);
+    if (/relevant courses:/i.test(raw)) {
+      const [before, after] = raw.split(/relevant courses:/i);
+      const out: string[] = [];
+      if (before && before.trim()) out.push(before.trim());
+      if (after && after.trim()) out.push('Relevant courses: ' + after.trim());
+      return out;
+    }
 
-  const onWindowResize = () => { setCanvasSize(); };
-  window.addEventListener('resize', onWindowResize);
-
-  const cleanup = () => {
-    cancelAnimationFrame(raf);
-    ro.disconnect();
-    window.removeEventListener('resize', onWindowResize);
-
-    geometry.dispose();
-    material.dispose();
-    texture.dispose();
-    renderer.dispose();
-
-    try { container.removeChild(renderer.domElement); } catch {}
-  };
-
-  const stop = () => cancelAnimationFrame(raf);
-
-  return { stop, cleanup };
-}
-
+    return raw
+      .split(/[;|]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
 }

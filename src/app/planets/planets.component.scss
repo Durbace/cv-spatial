@@ -269,3 +269,42 @@
 .project-card:not([active]) .project-card__header {
   justify-content: center;
 }
+
+.project-card__desc {
+  display: none;  
+  padding-left: 1.2rem;
+  margin-top: 0.5rem;
+  color: #ddd;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: calc(var(--open) - var(--planet-size) - var(--planet-gap) - 3rem);
+  margin-left: calc(var(--planet-size) + var(--planet-gap));
+  list-style: disc;              /* bullets */
+}
+
+.project-card[active] .project-card__desc {
+  display: block; 
+}
+
+.project-card__desc li {
+  margin: 0.25rem 0;
+}
+
+.contact-icons {
+  display: flex;
+  justify-content: center; 
+  gap: 1rem;
+  font-size: 3rem;
+  margin-top: 0.5rem;
+}
+
+.contact-icons a {
+  color: var(--accent);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.contact-icons a:hover {
+  color: #ffa366;
+  transform: scale(1.2);
+}
+

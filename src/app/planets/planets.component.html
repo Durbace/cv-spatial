@@ -11,12 +11,11 @@
     </button>
 
     <div class="title">
-  <div class="title-texts">
-    <h1 class="subtitle">Explore</h1>
-    <h1 class="main-title">The Planets</h1>
-  </div>
-</div>
-
+      <div class="title-texts">
+        <h1 class="subtitle">Explore</h1>
+        <h1 class="main-title">The Planets</h1>
+      </div>
+    </div>
   </div>
 
   <div class="planet-viewer">
@@ -46,7 +45,44 @@
                 <h3 class="project-card__title">{{ planet.label }}</h3>
               </div>
 
-              <p class="project-card__desc">{{ planet.description }}</p>
+              <div
+                *ngIf="
+                  planet.name === 'Contact' && i === activeIndex;
+                  else defaultDesc
+                "
+                class="contact-icons"
+              >
+                <a
+                  href="mailto:dianadurbaca2003@gmail.com"
+                  target="_blank"
+                  title="Send me an Email"
+                >
+                  <i class="fas fa-envelope"></i>
+                </a>
+                <a
+                  href="https://github.com/Durbace"
+                  target="_blank"
+                  title="View my GitHub"
+                >
+                  <i class="fab fa-github"></i>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/diana-elena-durbacă-065473286"
+                  target="_blank"
+                  title="Visit my LinkedIn"
+                >
+                  <i class="fab fa-linkedin"></i>
+                </a>
+              </div>
+
+              <ng-template #defaultDesc>
+                <ul
+                  class="project-card__desc"
+                  *ngIf="getDescItems(planet)?.length"
+                >
+                  <li *ngFor="let item of getDescItems(planet)">{{ item }}</li>
+                </ul>
+              </ng-template>
             </div>
           </div>
         </article>

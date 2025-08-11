@@ -4,7 +4,7 @@
     "texture": "assets/planets/concrete.jpg",
     "name": "Personal Projects",
     "label": "Codara Prime",
-    "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Sudoku Game (C++ with Qt), CheckersGame (C# + MVVM).",
+    "description": "WeatherApp (Angular, Firebase); Liceu Bac App (PrimeNG, Angular, Node.js); Expense Tracker (web with Angular, mobile with Flutter, backend with Node.js, MongoDB); Sudoku Game (C++ with Qt); CheckersGame (C#, MVVM).",
     "size": 0.5
   },
   {
@@ -12,7 +12,7 @@
     "texture": "assets/planets/inkpaint.jpg",
     "name": "Technical Skills",
     "label": "Techton",
-    "description": "Frontend with Angular (Material, PrimeNG), CI/CD (GitHub Actions, ArgoCD), Docker, Kubernetes, RxJS, API Integration, Git, Firebase.",
+    "description": "Frontend with Angular (Material, PrimeNG); CI/CD (GitHub Actions, ArgoCD); Docker; Kubernetes; RxJS; API Integration; Git; Firebase.",
     "size": 0.7
   },
   {
@@ -20,7 +20,7 @@
     "texture": "assets/planets/ancientegyptian.jpg",
     "name": "Programming Languages",
     "label": "Syntaxia",
-    "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C, C++, C#.",
+    "description": "JavaScript; TypeScript; Dart; Java; Python; HTML; CSS; C; C++; C#.",
     "size": 0.6
   },
   {
@@ -28,7 +28,7 @@
     "texture": "assets/planets/colorful.jpg",
     "name": "Hobbies",
     "label": "Creatura",
-    "description": "Playing guitar, , gaming, photography, cooking, traveling.",
+    "description": "Playing guitar; gaming; photography; cooking; traveling.",
     "size": 0.8
   },
   {
@@ -36,7 +36,7 @@
     "texture": "assets/planets/2k_jupiter.jpg",
     "name": "Languages Spoken",
     "label": "Lingua",
-    "description": "Romanian, English",
+    "description": "Romanian; English",
     "size": 0.4
   },
   {
