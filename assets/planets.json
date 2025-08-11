@@ -2,6 +2,7 @@
   {
     "distance": 4,
     "texture": "assets/planets/concrete.jpg",
+    "background": "assets/planet-backgrounds/CodaraPrime.png",
     "name": "Personal Projects",
     "label": "Codara Prime",
     "description": "WeatherApp (Angular + Firebase), Liceu Bac App (PrimeNG + Angular + Node.js), Expense Tracker (web with Angular + mobile with Flutter, backend with Node.js + MongoDB), Sudoku Game (C++ with Qt), CheckersGame (C# + MVVM).",
@@ -10,6 +11,7 @@
   {
     "distance": 6,
     "texture": "assets/planets/inkpaint.jpg",
+    "background": "assets/planet-backgrounds/Techton.png",
     "name": "Technical Skills",
     "label": "Techton",
     "description": "Frontend with Angular (Material, PrimeNG), CI/CD (GitHub Actions, ArgoCD), Docker, Kubernetes, RxJS, API Integration, Git, Firebase.",
@@ -18,6 +20,7 @@
   {
     "distance": 8,
     "texture": "assets/planets/ancientegyptian.jpg",
+    "background": "assets/planet-backgrounds/Syntaxia.png",
     "name": "Programming Languages",
     "label": "Syntaxia",
     "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C, C++, C#.",
@@ -26,14 +29,16 @@
   {
     "distance": 10,
     "texture": "assets/planets/colorful.jpg",
+    "background": "assets/planet-backgrounds/Creatura.png",
     "name": "Hobbies",
     "label": "Creatura",
-    "description": "Playing guitar, , gaming, photography, cooking, traveling.",
+    "description": "Playing guitar, gaming, photography, cooking, traveling.",
     "size": 0.8
   },
   {
     "distance": 12,
     "texture": "assets/planets/2k_jupiter.jpg",
+    "background": "assets/planet-backgrounds/Lingua.png",
     "name": "Languages Spoken",
     "label": "Lingua",
     "description": "Romanian, English",
@@ -42,6 +47,7 @@
   {
     "distance": 14,
     "texture": "assets/planets/glass.jpg",
+    "background": "assets/planet-backgrounds/Connectara.png",
     "name": "Contact",
     "label": "Connectara",
     "description": "Email: dianadurbaca2003@gmail.com | GitHub: github.com/durbacadiana | LinkedIn: linkedin.com/in/durbacadiana",
@@ -50,6 +56,7 @@
   {
     "distance": 16,
     "texture": "assets/planets/2k_mars.jpg",
+    "background": "assets/planet-backgrounds/Acadomea.png",
     "name": "Education",
     "label": "Acadomea",
     "description": "Transilvania University of Brașov – Bachelor's in Computer Science and Master's in Internet Technologies (English program). Relevant courses: Data Structures, Algorithms, OOP (C++), AI (Python), Java.",
@@ -58,6 +65,7 @@
   {
     "distance": 20,
     "texture": "assets/planets/2k_neptune.jpg",
+    "background": "assets/planet-backgrounds/Expiron.png",
     "name": "Experience",
     "label": "Expiron",
     "description": "NTT Data – Frontend (Angular, UX/UI) and DevOps (CI/CD, Kubernetes, AWS, monitoring with Grafana).",
