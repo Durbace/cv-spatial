@@ -9,6 +9,7 @@ import {
   ViewEncapsulation,
   ViewChildren,
   QueryList,
+  AfterViewInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -25,6 +26,11 @@ type Planet = {
   thumb?: string;
 };
 
+type PlanetHandle = {
+  stop: () => void;
+  cleanup: () => void;
+};
+
 @Component({
   selector: 'app-planets',
   standalone: true,
@@ -33,16 +39,21 @@ type Planet = {
   styleUrls: ['./planets.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class PlanetsComponent implements OnInit, OnDestroy {
+export class PlanetsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('wrap', { static: false }) wrapRef!: ElementRef<HTMLDivElement>;
   @ViewChild('track', { static: false }) trackRef!: ElementRef<HTMLDivElement>;
-  @ViewChildren('planetCanvas') planetCanvasList!: QueryList<ElementRef>;
+  @ViewChildren('planetCanvas') planetCanvasList!: QueryList<ElementRef<HTMLElement>>;
 
   planetsData: Planet[] = [];
   activeIndex = 0;
 
   private touchStartX = 0;
   private touchStartY = 0;
+
+  private planetHandles = new Map<number, PlanetHandle>();
+
+  private io?: IntersectionObserver;
+  private visibleSet = new Set<number>();
 
   constructor(
     private router: Router,
@@ -79,6 +90,42 @@ export class PlanetsComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    this.planetCanvasList.changes.subscribe(() => {
+      this.initAllPlanets();
+    });
+    setTimeout(() => this.initAllPlanets(), 0);
+
+    this.io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const idx = Number((entry.target as HTMLElement).dataset['index']);
+        if (Number.isFinite(idx)) {
+          if (entry.isIntersecting) {
+            this.visibleSet.add(idx);
+          } else {
+            this.visibleSet.delete(idx);
+          }
+        }
+      }
+    }, { threshold: 0.1 });
+  }
+
+  private initAllPlanets() {
+    if (!this.planetsData.length || !this.planetCanvasList?.length) return;
+
+    this.planetCanvasList.forEach((elRef, i) => {
+      const container = elRef.nativeElement;
+      container.dataset['index'] = String(i);
+
+      this.io?.observe(container);
+
+      if (!this.planetHandles.has(i)) {
+        const handle = this.initPlanet(this.planetsData[i].texture, container);
+        this.planetHandles.set(i, handle);
+      }
+    });
+  }
+
   private center(i: number, retries = 5) {
     const track = this.trackRef?.nativeElement;
     const wrap = this.wrapRef?.nativeElement;
@@ -106,18 +153,10 @@ export class PlanetsComponent implements OnInit, OnDestroy {
   }
 
   activate(i: number) {
-  if (i === this.activeIndex) return;
-  this.activeIndex = Math.max(0, Math.min(i, this.planetsData.length - 1));
-  this.center(this.activeIndex);
-
-  const container = this.planetCanvasList.toArray()[i]?.nativeElement;
-  if (container) {
-    setTimeout(() => {
-      this.initPlanet(this.planetsData[i].texture, container);
-    }, 600); 
+    if (i === this.activeIndex) return;
+    this.activeIndex = Math.max(0, Math.min(i, this.planetsData.length - 1));
+    this.center(this.activeIndex);
   }
-}
-
 
   go(step: number) {
     this.activate(this.activeIndex + step);
@@ -142,8 +181,6 @@ export class PlanetsComponent implements OnInit, OnDestroy {
     if (['ArrowLeft', 'ArrowUp'].includes(e.key)) this.go(-1);
   }
 
-  ngOnDestroy() {}
-
   onDetails(planet: Planet) {
     console.log('Details for:', planet);
   }
@@ -151,26 +188,27 @@ export class PlanetsComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/');
   }
 
-  initPlanet(textureUrl: string, container: HTMLElement) {
+  ngOnDestroy() {
+    this.io?.disconnect();
+    this.planetHandles.forEach(h => h.cleanup());
+    this.planetHandles.clear();
+  }
+
+  private initPlanet(textureUrl: string, container: HTMLElement): PlanetHandle {
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    container.clientWidth / container.clientHeight || 1,
-    0.1,
-    1000
-  );
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
   camera.position.z = 3;
+
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true,
     powerPreference: 'high-performance',
   });
 
-  const dpr = Math.min(2, window.devicePixelRatio || 1); 
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
   renderer.setPixelRatio(dpr);
-  renderer.setSize(container.clientWidth, container.clientHeight, false);
 
-  container.innerHTML = ''; 
+  container.innerHTML = '';
   container.appendChild(renderer.domElement);
 
   const geometry = new THREE.SphereGeometry(1, 96, 96);
@@ -194,19 +232,61 @@ export class PlanetsComponent implements OnInit, OnDestroy {
   light.position.set(5, 3, 5);
   scene.add(light);
 
+  const setCanvasSize = () => {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    if (w > 0 && h > 0) {
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+      return true;
+    }
+    return false;
+  };
+
+  let hasValidSize = setCanvasSize();
+
+  const ro = new ResizeObserver(() => {
+    const ok = setCanvasSize();
+    if (ok) renderer.render(scene, camera);
+  });
+  ro.observe(container);
+
+  let raf = 0;
   const animate = () => {
-    requestAnimationFrame(animate);
+    if (!hasValidSize) hasValidSize = setCanvasSize();
+
+    const idx = Number(container.dataset['index']);
+    if (!Number.isNaN(idx) && this.io && !this.visibleSet.has(idx)) {
+      raf = requestAnimationFrame(animate);
+      return;
+    }
+
     sphere.rotation.y += 0.002;
     renderer.render(scene, camera);
+    raf = requestAnimationFrame(animate);
   };
-  animate();
+  raf = requestAnimationFrame(animate);
 
-  const onResize = () => {
-    const { clientWidth, clientHeight } = container;
-    camera.aspect = (clientWidth || 1) / (clientHeight || 1);
-    camera.updateProjectionMatrix();
-    renderer.setSize(clientWidth, clientHeight, false);
+  const onWindowResize = () => { setCanvasSize(); };
+  window.addEventListener('resize', onWindowResize);
+
+  const cleanup = () => {
+    cancelAnimationFrame(raf);
+    ro.disconnect();
+    window.removeEventListener('resize', onWindowResize);
+
+    geometry.dispose();
+    material.dispose();
+    texture.dispose();
+    renderer.dispose();
+
+    try { container.removeChild(renderer.domElement); } catch {}
   };
-  window.addEventListener('resize', onResize);
+
+  const stop = () => cancelAnimationFrame(raf);
+
+  return { stop, cleanup };
 }
+
 }
