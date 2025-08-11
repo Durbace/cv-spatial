@@ -106,15 +106,18 @@ export class PlanetsComponent implements OnInit, OnDestroy {
   }
 
   activate(i: number) {
-    if (i === this.activeIndex) return;
-    this.activeIndex = Math.max(0, Math.min(i, this.planetsData.length - 1));
-    this.center(this.activeIndex);
+  if (i === this.activeIndex) return;
+  this.activeIndex = Math.max(0, Math.min(i, this.planetsData.length - 1));
+  this.center(this.activeIndex);
 
-    const container = this.planetCanvasList.toArray()[i]?.nativeElement;
-    if (container) {
+  const container = this.planetCanvasList.toArray()[i]?.nativeElement;
+  if (container) {
+    setTimeout(() => {
       this.initPlanet(this.planetsData[i].texture, container);
-    }
+    }, 600); 
   }
+}
+
 
   go(step: number) {
     this.activate(this.activeIndex + step);
