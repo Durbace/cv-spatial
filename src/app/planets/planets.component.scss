@@ -6,12 +6,10 @@
   --accent: #ff6b35;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Layout general */
 .page-container {
   display: flex;
   flex-direction: row;
@@ -20,7 +18,6 @@
   background: #07090d;
   color: #c5c7ce;
   overflow: hidden;
-
   background-image: url("../../assets/planets/2k_stars.jpg");
   background-size: cover;
   background-position: center;
@@ -40,242 +37,157 @@
 
 .title {
   pointer-events: none;
-  .subtitle {
-    font-weight: 300;
-    font-size: 2rem;
-    margin: 0;
-  }
-  .main-title {
-    font-weight: 800;
-    font-size: 4rem;
-    margin: 0;
-  }
+  .subtitle { font-weight: 300; font-size: 2rem; }
+  .main-title { font-weight: 800; font-size: 4rem; }
 }
 
+/* Back button */
 .back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 55px;
-  height: 55px;
-  border: 2px solid white;
-  border-radius: 50%;
-  background: transparent;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  position: absolute; top: 20px; left: 20px;
+  width: 55px; height: 55px;
+  border: 2px solid white; border-radius: 50%;
+  background: transparent; color: white;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s ease;
 }
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-.back-icon {
-  width: 28px;
-  height: 28px;
-  stroke: white;
-  stroke-width: 2;
-  fill: none;
-}
+.back-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.back-icon { width: 28px; height: 28px; stroke: white; stroke-width: 2; fill: none; }
 
+/* Viewer */
 .planet-viewer {
   position: relative;
-  width: 70vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  width: 70vw; height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
 }
 
+/* Header (opțional) */
 .head {
-  width: 100%;
-  max-width: 1400px;
-  margin: auto;
-  padding: 70px 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  h2 {
-    font: 400 1.5rem/1.2 Inter, sans-serif;
-    color: #fff;
-  }
+  width: 100%; max-width: 1400px; margin: auto; padding: 70px 20px 40px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem;
+  h2 { font: 400 1.5rem/1.2 Inter, sans-serif; color: #fff; }
 }
-@media (min-width: 1024px) {
-  .head h2 {
-    font-size: 2.25rem;
-  }
-}
-.controls {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-.nav-btn {
-  width: 2.5rem;
-  height: 2.5rem;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.nav-btn:hover {
-  background: var(--accent);
-}
-.nav-btn:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
+@media (min-width: 1024px) { .head h2 { font-size: 2.25rem; } }
 
-.slider {
-  width: 100%;
-  max-width: 1400px;
-  margin: auto;
-  overflow: hidden;
+.controls { display: flex; gap: 0.5rem; }
+.nav-btn {
+  width: 2.5rem; height: 2.5rem; border: none; border-radius: 50%;
+  background: rgba(255,255,255,0.12); color: #fff; font-size: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: 0.3s;
 }
+.nav-btn:hover { background: var(--accent); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Slider */
+.slider { width: 100%; max-width: 1400px; margin: auto; overflow: hidden; }
 .track {
-  display: flex;
-  gap: var(--gap);
-  align-items: flex-start;
-  justify-content: center;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  display: flex; gap: var(--gap);
+  align-items: flex-start; justify-content: center;
+  scroll-behavior: smooth; scroll-snap-type: x mandatory;
   padding-bottom: 40px;
 }
-.track::-webkit-scrollbar {
-  display: none;
-}
+.track::-webkit-scrollbar { display: none; }
 
+/* Card */
 .project-card {
   position: relative;
   flex: 0 0 var(--closed);
   height: 26rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  cursor: pointer;
+  border-radius: 1rem; overflow: hidden; cursor: pointer;
   transition: flex-basis var(--speed), transform var(--speed);
 }
 .project-card[active] {
   flex-basis: var(--open);
   transform: translateY(-6px);
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.45);
 }
 
+/* BG */
 .project-card__bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
   filter: brightness(0.5);
   transition: filter 0.3s, transform var(--speed);
 }
-.project-card:hover .project-card__bg {
-  transform: scale(1.06);
-}
+.project-card:hover .project-card__bg { transform: scale(1.06); }
 
+/* Conținut card – stare implicită (închis): doar titlul, vertical & centrat */
 .project-card__content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  opacity: 0.8;
-  gap: 0.7rem;
-  padding: 0;
-  background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.85) 100%);
-  z-index: 2;
-
-  background: rgba(255, 255, 255, 0.22);
+  position: absolute; inset: 0;
+  display: flex; justify-content: center; align-items: center;
+  padding: 1.2rem 2rem 1.6rem;
+  background: rgba(255,255,255,0.22);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.1);
   backdrop-filter: blur(3.7px);
   -webkit-backdrop-filter: blur(3.7px);
 }
-.project-card__title {
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.35rem;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+
+/* Header din starea activă (planetă + nume pe un rând) */
+.project-card__header {
+  display: flex; align-items: center; gap: 1rem;
 }
-.project-card__thumb,
-.project-card__desc,
-.project-card__btn {
+
+/* Planetă (vizibilă doar la activ) */
+.project-card__planet {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
   display: none;
 }
 
-.project-card[active] .project-card__content {
-  flex-direction: row;
-  align-items: center;
-  padding: 1.2rem 2rem;
-  gap: 1.1rem;
+/* Titlu – bază */
+.project-card__title {
+  color: #fff;
+  font-weight: 800;
+  margin: 0;
 }
+
+/* Titlu – card închis (vertical) */
+.project-card:not([active]) .project-card__title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+/* Titlu – card activ (orizontal + mare) */
 .project-card[active] .project-card__title {
   writing-mode: horizontal-tb;
   transform: none;
-  font-size: 2.4rem;
+  font-size: clamp(1.8rem, 2.2vw + 1rem, 3rem);
+  line-height: 1.1;
 }
-.project-card[active] .project-card__thumb,
-.project-card[active] .project-card__desc,
-.project-card[active] .project-card__btn {
+
+/* Descriere (vizibilă doar la activ) */
+.project-card__desc {
+  display: none;
+  color: #ddd;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: 44ch;
+  margin-left: calc(72px + 1rem);
+}
+
+/* Stare activă – afișare planetă + descriere și layout pe coloană, aliniat la stânga */
+.project-card[active] .project-card__content {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.project-card[active] .project-card__planet,
+.project-card[active] .project-card__desc {
   display: block;
 }
 
-.project-card__thumb {
-  width: 133px;
-  height: 269px;
-  border-radius: 0.45rem;
-  object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-.project-card__desc {
-  color: #ddd;
-  font-size: 1rem;
-  line-height: 1.4;
-  max-width: 16rem;
-}
-.project-card__btn {
-  padding: 0.55rem 1.3rem;
-  border: none;
-  border-radius: 9999px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.project-card__btn:hover {
-  background: #ff824f;
-}
-
 .dots {
-  position: absolute;
-  bottom: 140px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
+  position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 0.5rem; justify-content: center;
 }
 .dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  cursor: pointer;
-  transition: 0.3s;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: rgba(255,255,255,0.35); cursor: pointer; transition: 0.3s;
 }
-.dot.active {
-  background: var(--accent);
-  transform: scale(1.2);
-}
+.dot.active { background: var(--accent); transform: scale(1.2); }
+

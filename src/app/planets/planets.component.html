@@ -38,7 +38,15 @@
           />
           <div class="project-card__content">
             <div class="project-card__info">
-              <h3 class="project-card__title">{{ planet.label }}</h3>
+              <div class="project-card__header">
+                <img
+                  class="project-card__planet"
+                  [src]="planet.thumb"
+                  [alt]="planet.label + ' thumbnail'"
+                />
+                <h3 class="project-card__title">{{ planet.label }}</h3>
+              </div>
+
               <p class="project-card__desc">{{ planet.description }}</p>
             </div>
           </div>
