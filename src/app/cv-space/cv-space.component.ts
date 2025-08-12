@@ -237,10 +237,9 @@ export class CvSpaceComponent implements AfterViewInit {
       label: displayLabel,
     };
 
+    planet.userData['driver'] = hitbox;
+
     Object.assign(planet.userData, {
-      angle,
-      distance,
-      speed,
       name,
       description,
       label,
@@ -270,6 +269,21 @@ export class CvSpaceComponent implements AfterViewInit {
 
     planet.add(sprite);
 
+    const ringGeo = new THREE.RingGeometry(size * 1.35, size * 1.6, 48);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.65,
+      side: THREE.DoubleSide,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = -size * 0.02;
+    ring.visible = false;
+    planet.add(ring);
+
+    planet.userData['selectionRing'] = ring;
+
     this.labelSprites.push(sprite);
   }
 
@@ -292,22 +306,22 @@ export class CvSpaceComponent implements AfterViewInit {
     requestAnimationFrame(this.animate);
 
     this.planetGroup.children.forEach((obj: any) => {
-      if (obj.userData?.distance != null && obj.userData?.angle != null) {
-        const isHovered = obj.userData['isHovered'];
-        const speedFactor = isHovered ? 0.2 : 1;
-        obj.userData.angle += obj.userData.speed * speedFactor;
+      if (!obj.userData?.targetPlanet) return;
 
-        obj.position.set(
-          Math.cos(obj.userData.angle) * obj.userData.distance,
-          0,
-          Math.sin(obj.userData.angle) * obj.userData.distance
-        );
+      const isHovered = !!obj.userData['isHovered'];
+      const speedFactor = isHovered ? 0.2 : 1;
 
-        if (obj.userData['targetPlanet']) {
-          obj.userData['targetPlanet'].position.copy(obj.position);
-        }
-      }
+      obj.userData.angle += obj.userData.speed * speedFactor;
+
+      obj.position.set(
+        Math.cos(obj.userData.angle) * obj.userData.distance,
+        0,
+        Math.sin(obj.userData.angle) * obj.userData.distance
+      );
+
+      obj.userData.targetPlanet.position.copy(obj.position);
     });
+
     this.shootingStarTimer += 1;
     if (this.shootingStarTimer > 100 && Math.random() < 0.05) {
       this.createShootingStar();
@@ -373,6 +387,11 @@ export class CvSpaceComponent implements AfterViewInit {
     const labelHit = this.raycaster.intersectObjects(this.labelSprites, false);
     if (labelHit.length > 0) {
       if (this.hoveredPlanet) {
+        const prevDriver = this.hoveredPlanet.userData[
+          'driver'
+        ] as THREE.Object3D;
+        if (prevDriver) prevDriver.userData['isHovered'] = false;
+
         if (this.hoveredPlanet.userData['isSelected']) {
           this.setSelectedGlow(this.hoveredPlanet);
         } else {
@@ -381,6 +400,7 @@ export class CvSpaceComponent implements AfterViewInit {
         this.hoveredPlanet.userData['isHovered'] = false;
         this.hoveredPlanet = null;
       }
+
       document.body.style.cursor = 'pointer';
       return;
     }
@@ -388,6 +408,11 @@ export class CvSpaceComponent implements AfterViewInit {
     const sunIntersects = this.raycaster.intersectObject(this.sun);
     if (sunIntersects.length > 0) {
       if (this.hoveredPlanet) {
+        const prevDriver = this.hoveredPlanet.userData[
+          'driver'
+        ] as THREE.Object3D;
+        if (prevDriver) prevDriver.userData['isHovered'] = false;
+
         if (this.hoveredPlanet.userData['isSelected']) {
           this.setSelectedGlow(this.hoveredPlanet);
         } else {
@@ -406,8 +431,14 @@ export class CvSpaceComponent implements AfterViewInit {
     if (intersects.length > 0) {
       const obj = intersects[0].object as THREE.Mesh;
       const planet = (obj.userData['targetPlanet'] as THREE.Mesh) ?? obj;
+      const driver = (planet.userData['driver'] as THREE.Object3D) ?? obj;
 
       if (this.hoveredPlanet && this.hoveredPlanet !== planet) {
+        const prevDriver = this.hoveredPlanet.userData[
+          'driver'
+        ] as THREE.Object3D;
+        if (prevDriver) prevDriver.userData['isHovered'] = false;
+
         if (this.hoveredPlanet.userData['isSelected']) {
           this.setSelectedGlow(this.hoveredPlanet);
         } else {
@@ -424,9 +455,16 @@ export class CvSpaceComponent implements AfterViewInit {
 
       this.hoveredPlanet = planet;
       planet.userData['isHovered'] = true;
+      driver.userData['isHovered'] = true;
+
       document.body.style.cursor = 'pointer';
     } else {
       if (this.hoveredPlanet) {
+        const prevDriver = this.hoveredPlanet.userData[
+          'driver'
+        ] as THREE.Object3D;
+        if (prevDriver) prevDriver.userData['isHovered'] = false;
+
         if (this.hoveredPlanet.userData['isSelected']) {
           this.setSelectedGlow(this.hoveredPlanet);
         } else {
@@ -476,23 +514,42 @@ export class CvSpaceComponent implements AfterViewInit {
   }
 
   private setHoverGlow(planet: THREE.Mesh) {
-    const mat = planet.material as THREE.MeshStandardMaterial;
+    const mat = this.getStdMat(planet);
+    if (!mat) return;
     const baseI = planet.userData['baseEmissiveIntensity'] ?? 0.6;
     mat.emissiveIntensity = Math.min(baseI * 1.8, baseI + 0.9);
   }
 
   private setSelectedGlow(planet: THREE.Mesh) {
-    const mat = planet.material as THREE.MeshStandardMaterial;
+    const mat = this.getStdMat(planet);
+    if (!mat) return;
     const baseI = planet.userData['baseEmissiveIntensity'] ?? 0.6;
     mat.emissiveIntensity = Math.min(baseI * 2.2, baseI + 1.2);
     planet.userData['isSelected'] = true;
+
+    const ring: THREE.Mesh | undefined = planet.userData['selectionRing'];
+    if (ring) ring.visible = true;
   }
 
   private restoreBaseGlow(planet: THREE.Mesh) {
-    const mat = planet.material as THREE.MeshStandardMaterial;
+    const mat = this.getStdMat(planet);
+    if (!mat) return;
     const baseI = planet.userData['baseEmissiveIntensity'] ?? 0.5;
     const baseC = planet.userData['baseEmissiveColor'] ?? 0x111111;
-    (mat.emissive as THREE.Color).set(baseC);
+    mat.emissive.set(baseC);
     mat.emissiveIntensity = baseI;
+
+    planet.userData['isSelected'] = false;
+    const ring: THREE.Mesh | undefined = planet.userData['selectionRing'];
+    if (ring) ring.visible = false;
+  }
+
+  private getStdMat(obj: THREE.Object3D): THREE.MeshStandardMaterial | null {
+    const mesh = obj as THREE.Mesh;
+    const mat = mesh.material as any;
+    if (mat && typeof mat === 'object' && 'emissive' in mat) {
+      return mat as THREE.MeshStandardMaterial;
+    }
+    return null;
   }
 }
