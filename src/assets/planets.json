@@ -20,7 +20,7 @@
     "texture": "assets/planets/ancientegyptian.jpg",
     "name": "Programming Languages",
     "label": "Syntaxia",
-    "description": "JavaScript; TypeScript; Dart; Java; Python; HTML; CSS; C; C++; C#",
+    "description": "JavaScript, TypeScript, Dart, Java, Python, HTML, CSS, C/C++/C#",
     "size": 0.6
   },
   {
@@ -28,7 +28,7 @@
     "texture": "assets/planets/colorful.jpg",
     "name": "Hobbies",
     "label": "Creatura",
-    "description": "Playing guitar; Gaming; Photography; Cooking; Traveling",
+    "description": "Playing guitar, Gaming, Photography, Cooking, Traveling",
     "size": 0.8
   },
   {
@@ -36,7 +36,7 @@
     "texture": "assets/planets/2k_jupiter.jpg",
     "name": "Languages Spoken",
     "label": "Lingua",
-    "description": "Romanian; English",
+    "description": "Romanian, English",
     "size": 0.4
   },
   {
